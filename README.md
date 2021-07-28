@@ -19,3 +19,15 @@ The code has been developped and tested with the Raspberry Pi 3 B+. There are a 
 * Download and flash out the disk image provided and boot the device
 * Add the remote Balena repo (`git remote add balena BALENA_USERNAME@git.balena-cloud.com:BALENA_USERNAME/BALENA_PROJECT.git`)
 * The following ENV variables must be set: `FREQ`, `SENTRY_CONFIG`, `SENTRY_DIAG`, `SENTRY_PKTFWD`, and `VARIANT`
+* Add the remote Balena repo (`git remote add balena YourUser@git.balena-cloud.com:YourUser/YourProject.git`)
+
+You can now push your changes using the following command:
+
+```
+$ git push balena YourLocalBranch:master
+```
+
+
+## Generating protobufs
+
+Install protobuf, eg `sudo snap install protobuf` then run `genProtos.sh` from `src/protobuf`, eg: `cd src/protobuf && sh genProtos.sh`.
