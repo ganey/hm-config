@@ -30,7 +30,7 @@ try:
 except ImportError:
     import gobject as GObject
 
-from bletools import BleTools
+from lib.cputemp.bletools import BleTools
 
 BLUEZ_SERVICE_NAME = "org.bluez"
 GATT_MANAGER_IFACE = "org.bluez.GattManager1"
