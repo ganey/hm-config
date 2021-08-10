@@ -16,9 +16,6 @@ WORKDIR /opt/
 # Copy python dependencies for `pip install` later
 COPY requirements.txt requirements.txt
 
-# Download the variant_definitions in the builder so that runner doesn't need wget
-RUN wget -q "https://raw.githubusercontent.com/NebraLtd/helium-hardware-definitions/d84ee2af049b9c033c07788bea577a459aeb3aaa/variant_definitions.py"
-
 # This will be the path that venv uses for installation below
 ENV PATH="/opt/venv/bin:$PATH"
 
@@ -34,8 +31,6 @@ RUN \
             python3-pip=18.1-5+rpt1 \
             wget=1.20.1-1.1 \
             python3-venv=3.7.3-1 \
-            # Dependencies for building PyGObject
-            libgirepository1.0-dev gcc libcairo2-dev pkg-config python3-dev gir1.2-gtk-3.0 \
             --no-install-recommends && \
     # Because the PATH is already updated above, this command creates a new venv AND activates it
     python3 -m venv /opt/venv && \
@@ -55,23 +50,18 @@ RUN \
     DEBIAN_FRONTEND="noninteractive" \
     TZ="$SYSTEM_TIMEZONE" \
     apt-get install -y \
-        bluez=5.50-1.2~deb10u1 \
+        bluez \
         libdbus-1-3=1.12.20-0+deb10u1 \
         network-manager=1.14.6-2+deb10u1 \
+        python3-gi=3.30.4-1 \
         python3-venv=3.7.3-1
 
 # Nebra uses /opt by convention
 WORKDIR /opt/
 
 # Copy the code and starter script
-COPY config-python/ config-python/
+COPY config_app/ config_app/
 COPY start-gateway-config.sh start-gateway-config.sh
-
-# Switch context to the source code
-WORKDIR /opt/config-python/
-
-# Copy variant_definitions from builder
-COPY --from=builder /opt/variant_definitions.py variant_definitions.py
 
 # Copy venv from builder and update PATH to activate it
 COPY --from=builder /opt/venv /opt/venv

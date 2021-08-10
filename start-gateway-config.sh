@@ -23,4 +23,4 @@ printf "pairable off\nquit" | /usr/bin/bluetoothctl
 
 # Assuming this is being run within virtualenv, 
 # `python` will refer to the correct variant
-python config_program.py
+python config_app

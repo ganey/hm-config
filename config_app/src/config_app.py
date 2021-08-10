@@ -1,12 +1,11 @@
-import os
+# import os
 import sentry_sdk
-import dbus
+# import dbus
 import logging
-import sys
-import json
-import src.nmcli_custom as nmcli
-import src.uuids
-import h3
+# import sys
+# import json
+# import src.nmcli_custom as nmcli
+# import h3
 
 import threading
 # From imports
@@ -14,10 +13,15 @@ from time import sleep
 # from RPi import GPIO
 from lib.helium_hardware_definitions.variant_definitions import variant_definitions
 
-# BLE Library
-from lib.cputemp.advertisement import Advertisement
-from lib.cputemp.service import Application, Service, Characteristic, Descriptor
-from lib.cputemp.bletools import BleTools
+# # BLE Library
+# from lib.cputemp.advertisement import Advertisement
+# from lib.cputemp.service import Application, Service, Characteristic, Descriptor
+# from lib.cputemp.bletools import BleTools
+
+from src.bluetooth.bluetooth_processor import BluetoothProcessor
+from src.bluetooth.led_processor import LEDProcessor
+from src.bluetooth.advertisement_processor import AdvertisementProcessor
+
 
 # Protobuf Imports
 import lib.protos.add_gateway_pb2
@@ -30,21 +34,45 @@ import lib.protos.wifi_services_pb2
 from gpiozero import Button, LED
 
 class ConfigApp:
+    def __init__(self, sentry_dsn, balena_app_name, balena_device_uuid, variant):
+        self.init_sentry(sentry_dsn, balena_app_name, balena_device_uuid, variant)
+        self.variant = variant
+        self.restart_counter = 0
+        self.bluetooth_processor = BluetoothProcessor()
+        self.led_processor = LEDProcessor()
+        self.advertisement_process = AdvertisementProcessor(variant)
+        
     def start(self):
         logging.debug("Starting ConfigApp")
+        try:
+            print("Starting %s" % (self.restart_counter))
+            app_thread = threading.Thread(target=self.bluetooth_processor.run)
+            led_thread = threading.Thread(target=self.led_processor.run)
+            advertisement_thread = threading.Thread(target=self.advertisement_process.run)
+            app_thread.daemon = True
+            app_thread.start()
+            led_thread.start()
+            advertisement_thread.start()
+            # ledThread.start()
+            # diagnosticsThread.start()
+            # wifiThread.start()
+            # advertisementThread.start()
+
+        except KeyboardInterrupt:
+            logging.debug("KEYBOAD INTERRUPTION")
+            self.bluetooth_processor.quit()
+            # GPIO.cleanup()
+        except Exception as e:
+            logging.error(e)
+            # GPIO.cleanup()
 
     def stop(self):
         logging.debug("Stopping ConfigApp")
 
-# # ET Phone Home
-# variant = os.getenv('VARIANT')
-# sentry_key = os.getenv('SENTRY_CONFIG')
-# balena_id = os.getenv('BALENA_DEVICE_UUID')
-# balena_app = os.getenv('BALENA_APP_NAME')
-# uuids.FIRMWARE_VERSION = os.getenv('FIRMWARE_VERSION')
-# sentry_sdk.init(sentry_key, environment=balena_app)
-# sentry_sdk.set_user({"id": balena_id})
-# sentry_sdk.set_context("variant", {variant})
+    def init_sentry(self, sentry_dsn, balena_app_name, balena_device_uuid, variant):
+        sentry_sdk.init(sentry_dsn, environment=balena_app_name)
+        sentry_sdk.set_user({ "id": balena_device_uuid })
+        sentry_sdk.set_context("variant", { variant })
 
 # variantDetails = variant_definitions[variant]
 
@@ -76,15 +104,11 @@ class ConfigApp:
 
 # logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
-# app = Application()
-# app.add_service(DeviceInformationService(0))
-# app.add_service(HeliumService(1))
-# app.register()
+
 
 # adv = ConfigAdvertisement(0)
 
 # # Setup GPIO Devices
-# variant = os.getenv('VARIANT')
 # if (variant == "NEBHNT-IN1") or (variant == "Indoor"):
 #     buttonGPIO = 26
 #     statusGPIO = 25
@@ -96,9 +120,7 @@ class ConfigApp:
 
 # advertise = True
 
-# count = 0
 
-# appThread = threading.Thread(target=app.run)
 # ledThread = threading.Thread(target=ledThreadCode)
 # diagnosticsThread = threading.Thread(target=diagnosticsThreadCode)
 # advertisementThread = threading.Thread(target=advertisementThreadCode)
@@ -107,20 +129,3 @@ class ConfigApp:
 # userButton.when_held = startAdvert
 
 
-# # Main Loop Starts Here
-# try:
-#     print("Starting %s" % (count))
-#     # app.run()
-#     appThread.daemon = True
-#     appThread.start()
-#     ledThread.start()
-#     diagnosticsThread.start()
-#     wifiThread.start()
-#     advertisementThread.start()
-
-# except KeyboardInterrupt:
-#     app.quit()
-#     GPIO.cleanup()
-# except Exception as e:
-#     print(e)
-#     GPIO.cleanup()

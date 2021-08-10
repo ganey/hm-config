@@ -20,6 +20,7 @@ SOFTWARE.
 """
 
 import dbus
+import dbus.service
 import dbus.mainloop.glib
 import dbus.exceptions
 
@@ -51,7 +52,6 @@ class NotSupportedException(dbus.exceptions.DBusException):
 
 class NotPermittedException(dbus.exceptions.DBusException):
     _dbus_error_name = "org.bluez.Error.NotPermitted"
-
 
 class Application(dbus.service.Object):
     def __init__(self):
