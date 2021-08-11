@@ -11,16 +11,16 @@ import threading
 # From imports
 from time import sleep
 # from RPi import GPIO
-from lib.helium_hardware_definitions.variant_definitions import variant_definitions
+from lib.hardware.variant_definitions import variant_definitions
 
 # # BLE Library
 # from lib.cputemp.advertisement import Advertisement
 # from lib.cputemp.service import Application, Service, Characteristic, Descriptor
 # from lib.cputemp.bletools import BleTools
 
-from src.bluetooth.bluetooth_processor import BluetoothProcessor
-from src.bluetooth.led_processor import LEDProcessor
-from src.bluetooth.advertisement_processor import AdvertisementProcessor
+from minerconfig.bluetooth.bluetooth_processor import BluetoothProcessor
+from minerconfig.bluetooth.led_processor import LEDProcessor
+from minerconfig.bluetooth.advertisement_processor import AdvertisementProcessor
 
 
 # Protobuf Imports

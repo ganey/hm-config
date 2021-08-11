@@ -2,14 +2,14 @@ import logging
 import dbus
 
 from lib.cputemp.service import Application, Service, Characteristic, Descriptor
-import src.constants
+import minerconfig.constants
 
 MANUFACTURER_NAME = "Nebra LTD."
 
 class ManufactureNameCharacteristic(Characteristic):
     def __init__(self, service):
         Characteristic.__init__(
-                self, src.constants.MANUFACTURE_NAME_CHARACTERISTIC_UUID,
+                self, minerconfig.constants.MANUFACTURE_NAME_CHARACTERISTIC_UUID,
                 ["read"], service)
 
     def ReadValue(self, options):

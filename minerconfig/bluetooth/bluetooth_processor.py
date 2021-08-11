@@ -1,5 +1,5 @@
 from lib.cputemp.service import Application
-from src.bluetooth.device_information_service import DeviceInformationService
+from minerconfig.bluetooth.device_information_service import DeviceInformationService
 
 class BluetoothProcessor(Application):
     def __init__(self):

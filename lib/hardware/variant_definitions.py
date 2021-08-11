@@ -1,3 +1,5 @@
+# Copied from: https://github.com/NebraLtd/helium-hardware-definitions/blob/577ce0ebca4349398480e01842aee4ad2662d2d4/variant_definitions.py
+
 variant_definitions = {
     # Nebra Indoor Hotspot Gen1
     'NEBHNT-IN1': {
@@ -33,7 +35,7 @@ variant_definitions = {
         'RESET': 38,
         'MAC': 'eth0',
         'STATUS': 25,
-        'BUTTON': 26,
+        'BUTTON': 24,
         'ECCOB': True,
         'TYPE': 'Full'
         },
@@ -46,7 +48,7 @@ variant_definitions = {
         'RESET': 38,
         'MAC': 'eth0',
         'STATUS': 25,
-        'BUTTON': 26,
+        'BUTTON': 24,
         'ECCOB': True,
         'TYPE': 'Full'
         },

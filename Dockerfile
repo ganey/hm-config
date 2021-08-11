@@ -42,7 +42,7 @@ RUN \
 ####################################################################################################
 ################################### Stage: runner ##################################################
 
-FROM balenalib/raspberry-pi-debian-python:buster-run as runner
+FROM balenalib/raspberry-pi-debian-python:3.7.9-buster-run-20210705 as runner
 
 # Install bluez, libdbus, network-manager, python3-gi, and venv
 RUN \
@@ -50,7 +50,7 @@ RUN \
     DEBIAN_FRONTEND="noninteractive" \
     TZ="$SYSTEM_TIMEZONE" \
     apt-get install -y \
-        bluez \
+        bluez=5.50-1.2~deb10u1+rpt2 \
         libdbus-1-3=1.12.20-0+deb10u1 \
         network-manager=1.14.6-2+deb10u1 \
         python3-gi=3.30.4-1 \
@@ -60,7 +60,8 @@ RUN \
 WORKDIR /opt/
 
 # Copy the code and starter script
-COPY config_app/ config_app/
+COPY lib/ lib/
+COPY minerconfig/ minerconfig/
 COPY start-gateway-config.sh start-gateway-config.sh
 
 # Copy venv from builder and update PATH to activate it

@@ -3,14 +3,16 @@ from time import sleep
 
 from lib.cputemp.bletools import BleTools
 
-from src.bluetooth.connection_advertisement import ConnectionAdvertisement
+from minerconfig.bluetooth.connection_advertisement import ConnectionAdvertisement
 
+ADVERTISEMENT_TYPE = "peripheral"
+ADVERTISEMENT_INDEX = 0
 ADVERTISEMENT_SECONDS = 300
 
 class AdvertisementProcessor:
     def __init__(self, variant):
         self.should_advertise = True
-        self.connection_advertisement = ConnectionAdvertisement(0, variant)
+        self.connection_advertisement = ConnectionAdvertisement(ADVERTISEMENT_INDEX, ADVERTISEMENT_TYPE, variant)
 
     def run(self):
         logging.debug("Advertising Bluetooth")

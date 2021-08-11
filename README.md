@@ -45,6 +45,17 @@ sudo apt-get install -y libffi-dev libssl-dev make build-essential libssl-dev zl
 5. Setup virtualenv: `python3 -m venv venv && source venv/bin/activate`
 6. Install dependencies: `pip install -r requirements.txt`
 
+## Testing
+
+Assuming virtualenv has been activated, execute the following command to run the tests:
+
+```
+pip install -r test-requirements.txt
+pytest
+# Or test and run coverage report, with failure under 50%
+pytest --cov=config_app --cov-fail-under=50
+```
+
 ## Generating protobufs
 
 - Install protobuf
