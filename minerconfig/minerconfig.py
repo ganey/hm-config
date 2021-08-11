@@ -18,9 +18,9 @@ from lib.hardware.variant_definitions import variant_definitions
 # from lib.cputemp.service import Application, Service, Characteristic, Descriptor
 # from lib.cputemp.bletools import BleTools
 
-from minerconfig.bluetooth.processors.service_processor import BluetoothProcessor
+from minerconfig.bluetooth.processors.bluetooh_services_processor import BluetoothServicesProcessor
 from minerconfig.bluetooth.processors.led_processor import LEDProcessor
-from minerconfig.bluetooth.processors.advertisement_processor import AdvertisementProcessor
+from minerconfig.bluetooth.processors.bluetooth_advertisement_processor import BluetoothAdvertisementProcessor
 
 
 # Protobuf Imports
@@ -32,27 +32,28 @@ import lib.protos.wifi_remove_pb2
 import lib.protos.wifi_services_pb2
 
 from gpiozero import Button, LED
+MANUFACTURER_NAME = "Nebra LTD."
 
 class ConfigApp:
     def __init__(self, sentry_dsn, balena_app_name, balena_device_uuid, variant):
         self.init_sentry(sentry_dsn, balena_app_name, balena_device_uuid, variant)
         self.variant = variant
         self.restart_counter = 0
-        self.bluetooth_processor = BluetoothProcessor()
-        self.led_processor = LEDProcessor()
-        self.advertisement_process = AdvertisementProcessor(variant)
+        self.bluetooth_services_processor = BluetoothServicesProcessor()
+        # self.led_processor = LEDProcessor()
+        self.bluetooth_advertisement_processor = BluetoothAdvertisementProcessor(variant)
         
     def start(self):
         logging.debug("Starting ConfigApp")
         try:
             print("Starting %s" % (self.restart_counter))
-            app_thread = threading.Thread(target=self.bluetooth_processor.run)
-            led_thread = threading.Thread(target=self.led_processor.run)
-            advertisement_thread = threading.Thread(target=self.advertisement_process.run)
-            app_thread.daemon = True
-            app_thread.start()
-            led_thread.start()
-            advertisement_thread.start()
+            bluetooth_services_thread = threading.Thread(target=self.bluetooth_services_processor.run)
+            # led_thread = threading.Thread(target=self.led_processor.run)
+            bluetooth_advertisement_thread = threading.Thread(target=self.bluetooth_advertisement_processor.run)
+            bluetooth_services_thread.daemon = True
+            bluetooth_services_thread.start()
+            # led_thread.start()
+            bluetooth_advertisement_thread.start()
             # ledThread.start()
             # diagnosticsThread.start()
             # wifiThread.start()

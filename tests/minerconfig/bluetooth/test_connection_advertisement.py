@@ -7,8 +7,9 @@ import dbus
 import dbus.mainloop.glib
 from unittest.mock import patch, mock_open
 
-from minerconfig.bluetooth.connection_advertisement import ConnectionAdvertisement, ETH0_MAC_ADDRESS_PATH
+from minerconfig.bluetooth.advertisements.connection_advertisement import ConnectionAdvertisement
 from lib.cputemp.advertisement import Advertisement
+import minerconfig.constants
 
 
 # Should correspond with ConnectionAdvertisement.ADVERTISEMENT_SERVICE_UUID
@@ -39,7 +40,7 @@ class TestConnectionAdvertisement(TestCase):
 
     @patch("builtins.open", new_callable=mock_open, read_data='a1:B2:c3:Dd:e5:f6')
     def test_get_properties(self, eth0_file_mock):
-        assert open(ETH0_MAC_ADDRESS_PATH).read() == 'a1:B2:c3:Dd:e5:f6'
+        assert open(minerconfig.constants.ETH0_MAC_ADDRESS_PATH).read() == 'a1:B2:c3:Dd:e5:f6'
         advertisement = ConnectionAdvertisement(101, "peripheral", "NEBHNT-IN1")
         properties = advertisement.get_properties()
         expected = {

@@ -9,7 +9,7 @@ ADVERTISEMENT_TYPE = "peripheral"
 ADVERTISEMENT_INDEX = 0
 ADVERTISEMENT_SECONDS = 300
 
-class AdvertisementProcessor:
+class BluetoothAdvertisementProcessor:
     def __init__(self, variant):
         self.should_advertise = True
         self.connection_advertisement = ConnectionAdvertisement(ADVERTISEMENT_INDEX, ADVERTISEMENT_TYPE, variant)

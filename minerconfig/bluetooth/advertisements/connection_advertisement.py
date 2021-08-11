@@ -1,7 +1,7 @@
 from lib.cputemp.advertisement import Advertisement
 from lib.hardware.variant_definitions import variant_definitions
+import minerconfig.constants
 
-ETH0_MAC_ADDRESS_PATH = "/sys/class/net/eth0/address"
 ADVERTISEMENT_SERVICE_UUID = "0fda92b2-44a2-4af2-84f5-fa682baa2b8d"
 UNKNOWN_MAC_ADDRESS_VAL = "XXXXXX"
 
@@ -10,7 +10,7 @@ class ConnectionAdvertisement(Advertisement):
     def __init__(self, index, advertisement_type, variant):
         Advertisement.__init__(self, index, advertisement_type)
         try:
-            mac_address_last6 = open(ETH0_MAC_ADDRESS_PATH) \
+            mac_address_last6 = open(minerconfig.constants.ETH0_MAC_ADDRESS_PATH) \
                 .readline() \
                 .strip() \
                 .replace(":", "")[-6:] \
