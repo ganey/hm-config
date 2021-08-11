@@ -3,7 +3,7 @@ from time import sleep
 
 from lib.cputemp.bletools import BleTools
 
-from minerconfig.bluetooth.connection_advertisement import ConnectionAdvertisement
+from minerconfig.bluetooth.advertisements.connection_advertisement import ConnectionAdvertisement
 
 ADVERTISEMENT_TYPE = "peripheral"
 ADVERTISEMENT_INDEX = 0

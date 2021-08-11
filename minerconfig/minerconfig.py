@@ -18,9 +18,9 @@ from lib.hardware.variant_definitions import variant_definitions
 # from lib.cputemp.service import Application, Service, Characteristic, Descriptor
 # from lib.cputemp.bletools import BleTools
 
-from minerconfig.bluetooth.bluetooth_processor import BluetoothProcessor
-from minerconfig.bluetooth.led_processor import LEDProcessor
-from minerconfig.bluetooth.advertisement_processor import AdvertisementProcessor
+from minerconfig.bluetooth.processors.service_processor import BluetoothProcessor
+from minerconfig.bluetooth.processors.led_processor import LEDProcessor
+from minerconfig.bluetooth.processors.advertisement_processor import AdvertisementProcessor
 
 
 # Protobuf Imports
