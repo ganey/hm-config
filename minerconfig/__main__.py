@@ -1,7 +1,7 @@
 import logging
 import os
 
-from minerconfig.minerconfig import ConfigApp
+from minerconfig.minerconfig_app import ConfigApp
 
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
 VARIANT = os.getenv('VARIANT')

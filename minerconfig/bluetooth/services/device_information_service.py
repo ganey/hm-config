@@ -1,5 +1,5 @@
-from lib.cputemp.service import Application, Service, Characteristic, Descriptor
-from minerconfig.bluetooth.characteristics.manufacture_name_characteristic import ManufacturerNameCharacteristic
+from lib.cputemp.service import Service
+from minerconfig.bluetooth.characteristics.manufacturer_name_characteristic import ManufacturerNameCharacteristic
 from minerconfig.bluetooth.characteristics.firmware_revision_characteristic import FirmwareRevisionCharacteristic
 from minerconfig.bluetooth.characteristics.serial_number_characteristic import SerialNumberCharacteristic
 import minerconfig.constants

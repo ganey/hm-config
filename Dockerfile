@@ -63,6 +63,7 @@ WORKDIR /opt/
 COPY lib/ lib/
 COPY minerconfig/ minerconfig/
 COPY start-gateway-config.sh start-gateway-config.sh
+ENV PYTHONPATH="/opt:$PYTHONPATH"
 
 # Copy venv from builder and update PATH to activate it
 COPY --from=builder /opt/venv /opt/venv
@@ -75,3 +76,4 @@ RUN apt-get autoremove -y && \
 
 # Run start-gateway-config script
 ENTRYPOINT ["sh", "/opt/start-gateway-config.sh"]
+# CMD while true; do sleep 1000; done

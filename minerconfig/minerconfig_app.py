@@ -24,15 +24,14 @@ from minerconfig.bluetooth.processors.bluetooth_advertisement_processor import B
 
 
 # Protobuf Imports
-import lib.protos.add_gateway_pb2
-import lib.protos.assert_location_pb2
-import lib.protos.diagnostics_pb2
-import lib.protos.wifi_connect_pb2
-import lib.protos.wifi_remove_pb2
-import lib.protos.wifi_services_pb2
+# import lib.protos.add_gateway_pb2
+# import lib.protos.assert_location_pb2
+# import lib.protos.diagnostics_pb2
+# import lib.protos.wifi_connect_pb2
+# import lib.protos.wifi_remove_pb2
+# import lib.protos.wifi_services_pb2
 
-from gpiozero import Button, LED
-MANUFACTURER_NAME = "Nebra LTD."
+# from gpiozero import Button, LED
 
 class ConfigApp:
     def __init__(self, sentry_dsn, balena_app_name, balena_device_uuid, variant):
