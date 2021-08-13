@@ -1,5 +1,4 @@
 import logging
-import dbus
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants

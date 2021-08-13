@@ -28,16 +28,16 @@ ONBOARDING_KEY_LABEL = "Onboarding Key"
 
 # Public Key
 PUBLIC_KEY_CHARACTERISTIC_UUID = "0a852c59-50d3-4492-bfd3-22fe58a24f01"
-PUBLIC_KEY_VALUE = "Public Key"
+PUBLIC_KEY_LABEL = "Public Key"
 
 # WiFiServices
 WIFI_SERVICES_CHARACTERISTIC_UUID = "d7515033-7e7b-45be-803f-c8737b171a29"
-WIFI_SERVICES_VALUE = "WiFi Services"
+WIFI_SERVICES_LABEL = "WiFi Services"
 
 # WiFiConfiguredServices
 WIFI_CONFIGURED_SERVICES_CHARACTERISTIC_UUID = \
     "e125bda4-6fb8-11ea-bc55-0242ac130003"
-WIFI_CONFIGURED_SERVICES_VALUE = "WiFi Configured Services"
+WIFI_CONFIGURED_SERVICES_LABEL = "WiFi Configured Services"
 
 # WiFiRemove
 WIFI_REMOVE_CHARACTERISTIC_UUID = "8cc6e0b3-98c5-40cc-b1d8-692940e6994b"
@@ -45,33 +45,33 @@ WIFI_REMOVE_VALUE = "WiFi Remove"
 
 # Diagnostics
 DIAGNOSTICS_CHARACTERISTIC_UUID = "b833d34f-d871-422c-bf9e-8e6ec117d57e"
-DIAGNOSTICS_VALUE = "Diagnostics"
+DIAGNOSTICS_LABEL = "Diagnostics"
 
 # Mac address
 MAC_ADDRESS_CHARACTERISTIC_UUID = "9c4314f2-8a0c-45fd-a58d-d4a7e64c3a57"
-MAC_ADDRESS_VALUE = "Mac Address"
+MAC_ADDRESS_LABEL = "Mac Address"
 
 # Lights
 LIGHTS_CHARACTERISTIC_UUID = "180efdef-7579-4b4a-b2df-72733b7fa2fe"
-LIGHTS_VALUE = "Lights"
+LIGHTS_LABEL = "Lights"
 
 
 # WiFiSSID
 WIFI_SSID_CHARACTERISTIC_UUID = "7731de63-bc6a-4100-8ab1-89b2356b038b"
-WIFI_SSID_VALUE = "WiFi SSID"
+WIFI_SSID_LABEL = "WiFi SSID"
 
 
 # AssertLocation
 ASSERT_LOCATION_CHARACTERISTIC_UUID = "d435f5de-01a4-4e7d-84ba-dfd347f60275"
-ASSERT_LOCATION_VALUE = "Assert Location"
+ASSERT_LOCATION_LABEL = "Assert Location"
 
 # Add Gateway
 ADD_GATEWAY_CHARACTERISTIC_UUID = "df3b16ca-c985-4da2-a6d2-9b9b9abdb858"
-ADD_GATEWAY_KEY_VALUE = "Add Gateway"
+ADD_GATEWAY_KEY_LABEL = "Add Gateway"
 
 # WiFiConnect
 WIFI_CONNECT_CHARACTERISTIC_UUID = "398168aa-0111-4ec0-b1fa-171671270608"
-WIFI_CONNECT_KEY_VALUE = "WiFi Connect"
+WIFI_CONNECT_KEY_LABEL = "WiFi Connect"
 
 
 # Ethernet Online
@@ -85,3 +85,5 @@ wifiStatus = {
     "60": "invalid",  # Invalid Key
     "30": "failed"   # Connection Failed
 }
+
+GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"

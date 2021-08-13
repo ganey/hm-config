@@ -2,625 +2,12 @@
 
 
 
-
-
-# class PublicKeyCharacteristic(Characteristic):
-
-#     def __init__(self, service):
-#         Characteristic.__init__(
-#                 self, uuids.PUBLIC_KEY_CHARACTERISTIC_UUID,
-#                 ["read"], service)
-#         self.add_descriptor(PublicKeyDescriptor(self))
-#         self.add_descriptor(utf8Format(self))
-
-#     def ReadValue(self, options):
-#         logging.debug('Read Public Key')
-#         value = []
-#         val = pubKey
-#         for c in val:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class PublicKeyDescriptor(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-#         value = []
-#         desc = uuids.PUBLIC_KEY_VALUE
-
-#         for c in desc:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class WiFiServicesCharacteristic(Characteristic):
-
-#     global wifiCache
-
-#     def __init__(self, service):
-#         Characteristic.__init__(
-#                 self, uuids.WIFI_SERVICES_CHARACTERISTIC_UUID,
-#                 ["read"], service)
-#         self.add_descriptor(WiFiServicesDescriptor(self))
-#         self.add_descriptor(opaqueStructure(self))
-
-#     def ReadValue(self, options):
-#         logging.debug('Read WiFi Services')
-#         wifiSsids = wifi_services_pb2.wifi_services_v1()
-
-#         for network in wifiCache:
-#             ssidStr = str(network.ssid)
-#             if(ssidStr != "--" and ssidStr != ""):
-#                 if(ssidStr not in wifiSsids.services):
-#                     wifiSsids.services.append(ssidStr)
-#                     logging.debug(ssidStr)
-#         value = []
-#         val = wifiSsids.SerializeToString()
-
-#         for c in val:
-#             value.append(dbus.Byte(c))
-#         if("offset" in options):
-#             cutDownArray = value[int(options["offset"]):]
-#             return cutDownArray
-#         else:
-#             return value
-
-
-# class WiFiServicesDescriptor(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-#         value = []
-#         desc = uuids.WIFI_SERVICES_VALUE
-
-#         for c in desc:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class WiFiConfiguredServicesCharacteristic(Characteristic):
-
-#     global wifiCache
-
-#     def __init__(self, service):
-#         Characteristic.__init__(
-#                 self, uuids.WIFI_CONFIGURED_SERVICES_CHARACTERISTIC_UUID,
-#                 ["read"], service)
-#         self.add_descriptor(WiFiConfiguredServicesDescriptor(self))
-#         self.add_descriptor(opaqueStructure(self))
-
-#     def ReadValue(self, options):
-#         logging.debug('Read WiFi CONFIGURED Services')
-#         wifiConfigured = wifi_services_pb2.wifi_services_v1()
-
-#         for network in wifiCache:
-#             if(network.ssid != "--"):
-#                 if(network.in_use):
-#                     activeConnection = str(network.ssid)
-#                     wifiConfigured.services.append(activeConnection)
-#                     print(activeConnection)
-#         value = []
-#         val = wifiConfigured.SerializeToString()
-
-#         for c in val:
-#             value.append(dbus.Byte(c))
-
-#         return value
-
-
-# class WiFiConfiguredServicesDescriptor(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-#         value = []
-#         desc = uuids.WIFI_CONFIGURED_SERVICES_VALUE
-
-#         for c in desc:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class DiagnosticsCharacteristic(Characteristic):
-#     # Returns proto of eth, wifi, fw, ip, p2pstatus
-
-#     def __init__(self, service):
-#         Characteristic.__init__(
-#                 self, uuids.DIAGNOSTICS_CHARACTERISTIC_UUID,
-#                 ["read"], service)
-#         self.add_descriptor(DiagnosticsDescriptor(self))
-#         self.add_descriptor(opaqueStructure(self))
-#         self.p2pstatus = ""
-
-#     def ReadValue(self, options): # noqa 901
-#         # TODO (Rob): come back and make this method less complex for
-#         # C901 complexity rules.
-#         logging.debug('Read diagnostics')
-#         logging.debug('Diagnostics miner_bus')
-#         miner_bus = dbus.SystemBus()
-#         logging.debug('Diagnostics miner_object')
-#         miner_object = miner_bus.get_object('com.helium.Miner', '/')
-#         logging.debug('Diagnostics miner_interface')
-#         miner_interface = dbus.Interface(miner_object, 'com.helium.Miner')
-#         logging.debug('Diagnostics p2pstatus')
-#         try:
-#             self.p2pstatus = miner_interface.P2PStatus()
-#             logging.debug('DBUS P2P SUCCEED')
-#             logging.debug(self.p2pstatus)
-#         except dbus.exceptions.DBusException:
-#             self.p2pstatus = ""
-#             logging.debug('DBUS P2P FAIL')
-
-#         try:
-#             ethIP = nmcli.device.show('eth0')['IP4.ADDRESS[1]'][:-3]
-#         except KeyError:
-#             pass
-#         try:
-#             wlanIP = nmcli.device.show('wlan0')['IP4.ADDRESS[1]'][:-3]
-#         except KeyError:
-#             pass
-
-#         ipAddress = "0.0.0.0"  # nosec
-#         if('ethIP' in locals()):
-#             ipAddress = str(ethIP)
-#         elif('wlanIP' in locals()):
-#             ipAddress = str(wlanIP)
-
-#         diagnosticsProto = diagnostics_pb2.diagnostics_v1()
-#         diagnosticsProto.diagnostics['connected'] = str(self.p2pstatus[0][1])
-#         diagnosticsProto.diagnostics['dialable'] = str(self.p2pstatus[1][1])
-#         diagnosticsProto.diagnostics['height'] = str(self.p2pstatus[3][1])
-#         diagnosticsProto.diagnostics['nat_type'] = str(self.p2pstatus[2][1])
-#         try:
-#             diagnosticsProto.diagnostics['eth'] = \
-#                 open("/sys/class/net/eth0/address").readline(). \
-#                 strip().replace(":", "")
-#         except FileNotFoundError:
-#             diagnosticsProto.diagnostics['eth'] = "FF:FF:FF:FF:FF:FF"
-#         diagnosticsProto.diagnostics['fw'] = os.getenv('FIRMWARE_VERSION')
-#         diagnosticsProto.diagnostics['ip'] = ipAddress
-#         try:
-#             wifi_diag = open("/sys/class/net/wlan0/address").readline(). \
-#                 strip().replace(":", "")
-#             diagnosticsProto.diagnostics['wifi'] = wifi_diag
-#         except FileNotFoundError:
-#             diagnosticsProto.diagnostics['wifi'] = "FF:FF:FF:FF:FF:FF"
-#         logging.debug('items added to proto')
-#         value = []
-#         val = diagnosticsProto.SerializeToString()
-#         logging.debug(val)
-#         for c in val:
-#             value.append(dbus.Byte(c))
-#         return value
-
-
-# class DiagnosticsDescriptor(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-#         value = []
-#         desc = uuids.DIAGNOSTICS_VALUE
-#         for c in desc:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class MacAddressCharacteristic(Characteristic):
-
-#     def __init__(self, service):
-#         Characteristic.__init__(
-#                 self, uuids.MAC_ADDRESS_CHARACTERISTIC_UUID,
-#                 ["read"], service)
-#         self.add_descriptor(MacAddressDescriptor(self))
-#         self.add_descriptor(utf8Format(self))
-
-#     def ReadValue(self, options):
-#         logging.debug('Read Mac Address')
-#         value = []
-#         val = open("/sys/class/net/eth0/address").readline().strip() \
-#             .replace(":", "")
-
-#         for c in val:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class MacAddressDescriptor(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-#         value = []
-#         desc = uuids.MAC_ADDRESS_VALUE
-
-#         for c in desc:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class LightsCharacteristic(Characteristic):
-
-#     def __init__(self, service):
-#         Characteristic.__init__(
-#                 self, uuids.LIGHTS_CHARACTERISTIC_UUID,
-#                 ["read"], service)
-#         self.add_descriptor(LightsDescriptor(self))
-#         self.add_descriptor(utf8Format(self))
-
-#     def ReadValue(self, options):
-#         logging.debug('Read Lights')
-#         value = []
-#         val = "false"
-
-#         for c in val:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class LightsDescriptor(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-#         value = []
-#         desc = uuids.LIGHTS_VALUE
-
-#         for c in desc:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class WiFiSSIDCharacteristic(Characteristic):
-
-#     global wifiCache
-
-#     def __init__(self, service):
-#         Characteristic.__init__(
-#                 self, uuids.WIFI_SSID_CHARACTERISTIC_UUID,
-#                 ["read"], service)
-#         self.add_descriptor(WiFiSSIDDescriptor(self))
-#         self.add_descriptor(utf8Format(self))
-
-#     def ReadValue(self, options):
-
-#         logging.debug('Read WiFi SSID')
-#         activeConnection = ""
-#         for network in wifiCache:
-#             if(network.ssid != "--"):
-#                 if(network.in_use):
-#                     activeConnection = str(network.ssid)
-#                     print(activeConnection)
-#         value = []
-
-#         for c in activeConnection:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class WiFiSSIDDescriptor(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-
-#         value = []
-#         desc = uuids.WIFI_SSID_VALUE
-
-#         for c in desc:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class AssertLocationCharacteristic(Characteristic):
-
-#     def __init__(self, service):
-#         Characteristic.__init__(
-#                 self, uuids.ASSERT_LOCATION_CHARACTERISTIC_UUID,
-#                 ["read", "write", "notify"], service)
-#         self.add_descriptor(AssertLocationDescriptor(self))
-#         self.add_descriptor(opaqueStructure(self))
-#         self.notifyValue = []
-#         for c in "init":
-#             self.notifyValue.append(dbus.Byte(c.encode()))
-
-#     def AddGatewayCallback(self):
-#         if self.notifying:
-#             logging.debug('Callback Assert Location')
-#             value = []
-#             val = ""
-
-#             for c in val:
-#                 value.append(dbus.Byte(c.encode()))
-#             self.PropertiesChanged(GATT_CHRC_IFACE, {"Value": value}, [])
-
-#     def StartNotify(self):
-
-#         logging.debug('Notify Assert Location')
-#         if self.notifying:
-#             return
-
-#         self.notifying = True
-
-#         self.PropertiesChanged(GATT_CHRC_IFACE, {"Value": self.notifyValue},
-#                                [])
-#         self.add_timeout(30000, self.AddGatewayCallback)
-
-#     def StopNotify(self):
-#         self.notifying = False
-
-#     def WriteValue(self, value, options):
-#         logging.debug('Write Assert Location')
-#         logging.debug(value)
-#         assLocDet = assert_location_pb2.assert_loc_v1()
-#         logging.debug('PB2C')
-#         assLocDet.ParseFromString(bytes(value))
-#         logging.debug('PB2P')
-#         logging.debug(str(assLocDet))
-#         miner_bus = dbus.SystemBus()
-#         miner_object = miner_bus.get_object('com.helium.Miner', '/')
-#         sleep(0.05)
-#         miner_interface = dbus.Interface(miner_object, 'com.helium.Miner')
-#         sleep(0.05)
-#         h3String = h3.geo_to_h3(assLocDet.lat, assLocDet.lon, 12)
-#         # logging.debug(h3String)
-#         # H3String, Owner, Nonce, Amount, Fee, Paye
-#         minerAssertRequest = \
-#             miner_interface. \
-#             AssertLocation(h3String,
-#                            assLocDet.owner, assLocDet.nonce, assLocDet.amount,
-#                            assLocDet.fee, assLocDet.payer)
-#         # logging.debug(assLocDet)
-#         self.notifyValue = minerAssertRequest
-
-#     def ReadValue(self, options):
-#         logging.debug('Read Assert Location')
-#         # logging.debug(options)
-#         if("offset" in options):
-#             cutDownArray = self.notifyValue[int(options["offset"]):]
-#             return cutDownArray
-#         else:
-#             return self.notifyValue
-
-
-# class AssertLocationDescriptor(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-#         value = []
-#         desc = uuids.ASSERT_LOCATION_VALUE
-
-#         for c in desc:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class AddGatewayCharacteristic(Characteristic):
-
-#     def __init__(self, service):
-#         Characteristic.__init__(
-#                 self, uuids.ADD_GATEWAY_CHARACTERISTIC_UUID,
-#                 ["read", "write", "notify"], service)
-#         self.add_descriptor(AddGatewayDescriptor(self))
-#         self.add_descriptor(opaqueStructure(self))
-#         self.notifyValue = []
-#         for c in "init":
-#             self.notifyValue.append(dbus.Byte(c.encode()))
-
-#     def AddGatewayCallback(self):
-#         if self.notifying:
-#             logging.debug('Callback Add Gateway')
-#             # value = []
-#             # val = ""
-
-#             # for c in val:
-#             #    value.append(dbus.Byte(c.encode()))
-#             self.PropertiesChanged(GATT_CHRC_IFACE,
-#                                    {"Value": self.notifyValue}, [])
-
-#     def StartNotify(self):
-
-#         logging.debug('Notify Add Gateway')
-#         if self.notifying:
-#             return
-
-#         self.notifying = True
-
-#         self.PropertiesChanged(GATT_CHRC_IFACE, {"Value": self.notifyValue},
-#                                [])
-#         self.add_timeout(30000, self.AddGatewayCallback)
-
-#     def StopNotify(self):
-#         self.notifying = False
-
-#     def WriteValue(self, value, options):
-#         logging.debug('Write Add Gateway')
-#         waitVal = []
-#         for c in "wait":
-#             waitVal.append(dbus.Byte(c.encode()))
-#         self.notifyValue = waitVal
-
-#         # logging.debug(value)
-#         addGatewayDetails = add_gateway_pb2.add_gateway_v1()
-#         # logging.debug('PB2C')
-#         addGatewayDetails.ParseFromString(bytes(value))
-#         # logging.debug('PB2P')
-#         # logging.debug(str(addGatewayDetails))
-#         miner_bus = dbus.SystemBus()
-#         miner_object = miner_bus.get_object('com.helium.Miner', '/')
-#         sleep(0.05)
-#         miner_interface = dbus.Interface(miner_object, 'com.helium.Miner')
-#         sleep(0.05)
-#         addMinerRequest = \
-#             miner_interface. \
-#             AddGateway(addGatewayDetails.owner, addGatewayDetails.fee,
-#                        addGatewayDetails.amount, addGatewayDetails.payer)
-#         # logging.debug(addMinerRequest)
-#         logging.debug("Adding Response")
-#         self.notifyValue = addMinerRequest
-
-#     def ReadValue(self, options):
-#         logging.debug('Read Add Gateway')
-#         if("offset" in options):
-#             cutDownArray = self.notifyValue[int(options["offset"]):]
-#             return cutDownArray
-#         else:
-#             return self.notifyValue
-#         # logging.debug(self.notifyValue)
-
-
-# class AddGatewayDescriptor(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-#         value = []
-#         desc = uuids.ADD_GATEWAY_KEY_VALUE
-
-#         for c in desc:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class WiFiConnectCharacteristic(Characteristic):
-
-#     def __init__(self, service):
-#         self.notifying = False
-#         Characteristic.__init__(
-#                 self, uuids.WIFI_CONNECT_CHARACTERISTIC_UUID,
-#                 ["read", "write", "notify"], service)
-#         self.add_descriptor(WiFiConnectDescriptor(self))
-#         self.add_descriptor(opaqueStructure(self))
-#         self.WiFiStatus = ""
-
-#     def WiFiConnectCallback(self):
-#         if self.notifying:
-#             logging.debug('Callback WiFi Connect')
-#             value = []
-#             self.WiFiStatus = "timeout"
-
-#             for c in self.WiFiStatus:
-#                 value.append(dbus.Byte(c.encode()))
-#             self.PropertiesChanged(GATT_CHRC_IFACE, {"Value": value}, [])
-
-#         return self.notifying
-
-#     def StartNotify(self):
-
-#         logging.debug('Notify WiFi Connect')
-#         if self.notifying:
-#             return
-
-#         self.notifying = True
-
-#         value = []
-#         self.WiFiStatus = self.checkWiFIStatus()
-#         for c in self.WiFiStatus:
-#             value.append(dbus.Byte(c.encode()))
-#         self.PropertiesChanged(GATT_CHRC_IFACE, {"Value": value}, [])
-#         self.add_timeout(30000, self.WiFiConnectCallback)
-
-#     def StopNotify(self):
-#         self.notifying = False
-
-#     def WriteValue(self, value, options):
-#         logging.debug('Write WiFi Connect')
-#         if(self.checkWiFIStatus() == "connected"):
-#             nmcli.device.disconnect('wlan0')
-#             logging.debug('Disconnected From Wifi')
-#         # logging.debug(value)
-#         wiFiDetails = wifi_connect_pb2.wifi_connect_v1()
-#         # logging.debug('PB2C')
-#         wiFiDetails.ParseFromString(bytes(value))
-#         # logging.debug('PB2P')
-#         self.WiFiStatus = "already"
-#         logging.debug(str(wiFiDetails.service))
-
-#         nmcli.device.wifi_connect(str(wiFiDetails.service),
-#                                   str(wiFiDetails.password))
-#         self.WiFiStatus = self.checkWiFIStatus()
-
-#     def checkWiFIStatus(self):
-#         # Check the current wi-fi connection status
-#         logging.debug('Check WiFi Connect')
-#         state = str(nmcli.device.show('wlan0')['GENERAL.STATE'].split(" ")[0])
-#         logging.debug(str(uuids.wifiStatus[state]))
-#         return uuids.wifiStatus[state]
-
-#     def ReadValue(self, options):
-
-#         logging.debug('Read WiFi Connect')
-#         self.WiFiStatus = self.checkWiFIStatus()
-#         value = []
-
-#         for c in self.WiFiStatus:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
-# class WiFiConnectDescriptor(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-#         value = []
-#         desc = uuids.WIFI_CONNECT_KEY_VALUE
-
-#         for c in desc:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
 # class WiFiRemoveCharacteristic(Characteristic):
 
 #     def __init__(self, service):
 #         self.notifying = False
 #         Characteristic.__init__(
-#                 self, uuids.WIFI_REMOVE_CHARACTERISTIC_UUID,
+#                 self, minerconfig.constants.WIFI_REMOVE_CHARACTERISTIC_UUID,
 #                 ["read", "write", "notify"], service)
 #         self.add_descriptor(WiFiRemoveDescriptor(self))
 #         self.add_descriptor(opaqueStructure(self))
@@ -678,55 +65,33 @@
 
 #     def __init__(self, characteristic):
 #         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
+#                 self, minerconfig.constants.USER_DESC_DESCRIPTOR_UUID,
 #                 ["read"],
 #                 characteristic)
 
 #     def ReadValue(self, options):
 #         value = []
-#         desc = uuids.WIFI_REMOVE_VALUE
+#         desc = minerconfig.constants.WIFI_REMOVE_VALUE
 
 #         for c in desc:
 #             value.append(dbus.Byte(c.encode()))
 #         return value
 
 
-# class EthernetOnlineCharacteristic(Characteristic):
 
-#     def __init__(self, service):
-#         Characteristic.__init__(
-#                 self, uuids.ETHERNET_ONLINE_CHARACTERISTIC_UUID,
-#                 ["read"], service)
-#         self.add_descriptor(EthernetOnlineDescriptor(self))
-#         self.add_descriptor(utf8Format(self))
-
-#     def ReadValue(self, options):
-
-#         logging.debug('Read Ethernet Online')
-
-#         value = []
-
-#         val = "false"
-
-#         if(open("/sys/class/net/eth0/carrier").readline().strip() == "1"):
-#             val = "true"
-
-#         for c in val:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
 
 
 # class EthernetOnlineDescriptor(Descriptor):
 
 #     def __init__(self, characteristic):
 #         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
+#                 self, minerconfig.constants.USER_DESC_DESCRIPTOR_UUID,
 #                 ["read"],
 #                 characteristic)
 
 #     def ReadValue(self, options):
 #         value = []
-#         desc = uuids.ETHERNET_ONLINE_VALUE
+#         desc = minerconfig.constants.ETHERNET_ONLINE_VALUE
 
 #         for c in desc:
 #             value.append(dbus.Byte(c.encode()))
@@ -736,7 +101,7 @@
 # class SoftwareVersionCharacteristic(Characteristic):
 #     def __init__(self, service):
 #         Characteristic.__init__(
-#                 self, uuids.SOFTWARE_VERSION_CHARACTERISTIC_UUID,
+#                 self, minerconfig.constants.SOFTWARE_VERSION_CHARACTERISTIC_UUID,
 #                 ["read"], service)
 
 #     def ReadValue(self, options):
@@ -756,7 +121,7 @@
 
 #     def __init__(self, characteristic):
 #         Descriptor.__init__(
-#                 self, uuids.PRESENTATION_FORMAT_DESCRIPTOR_UUID,
+#                 self, minerconfig.constants.PRESENTATION_FORMAT_DESCRIPTOR_UUID,
 #                 ["read"],
 #                 characteristic)
 
@@ -771,28 +136,6 @@
 #         value.append(dbus.Byte(0x00))
 
 #         return value
-
-
-# class opaqueStructure(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, uuids.PRESENTATION_FORMAT_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-#         value = []
-#         value.append(dbus.Byte(0x1B))
-#         value.append(dbus.Byte(0x00))
-#         value.append(dbus.Byte(0x00))
-#         value.append(dbus.Byte(0x00))
-#         value.append(dbus.Byte(0x01))
-#         value.append(dbus.Byte(0x00))
-#         value.append(dbus.Byte(0x00))
-
-#         return value
-
 
 # def diagnosticsThreadCode():
 #     logging.debug("Diagnostics Thread Started")
@@ -869,6 +212,7 @@
 #         if(scanWifi is True):
 #             logging.debug("Wi-Fi Scanning")
 #             wifiCache = nmcli.device.wifi()
+                # TODO -> call WifiServicesCharacteristic.update_wifi_list_cache, wificonfigureds12, wifissid4444444
 #             logging.debug("Wi-Fi Complete")
 #             sleep(15)
 #         else:

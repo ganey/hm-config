@@ -42,7 +42,7 @@ class ConfigApp:
 
         eth0_mac_address = read_eth0_mac_address(eth0_mac_address_filepath)
         onboarding_key, pub_key, animal_name = read_onboarding_key(onboarding_key_filepath)
-        self.bluetooth_services_processor = BluetoothServicesProcessor(eth0_mac_address, onboarding_key)
+        self.bluetooth_services_processor = BluetoothServicesProcessor(eth0_mac_address, onboarding_key, pub_key)
         # self.led_processor = LEDProcessor()
         self.bluetooth_advertisement_processor = BluetoothAdvertisementProcessor(eth0_mac_address, variant)
         
