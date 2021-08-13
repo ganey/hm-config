@@ -1,10 +1,14 @@
-# class HeliumService(Service):
-#     DEVINFO_SVC_UUID = "0fda92b2-44a2-4af2-84f5-fa682baa2b8d"
+from lib.cputemp.service import Service
 
-#     def __init__(self, index):
+import minerconfig.constants
+from minerconfig.bluetooth.characteristics.onboarding_key_characteristic import OnboardingKeyCharacteristic
 
-#         Service.__init__(self, index, self.DEVINFO_SVC_UUID, True)
-#         self.add_characteristic(OnboardingKeyCharacteristic(self))
+class HeliumService(Service):
+
+    def __init__(self, index, onboarding_key):
+
+        Service.__init__(self, index, minerconfig.constants.HELIUM_SERVICE_UUID, True)
+        self.add_characteristic(OnboardingKeyCharacteristic(self, onboarding_key))
 #         self.add_characteristic(PublicKeyCharacteristic(self))
 #         self.add_characteristic(WiFiServicesCharacteristic(self))
 #         self.add_characteristic(WiFiConfiguredServicesCharacteristic(self))

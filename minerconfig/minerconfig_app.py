@@ -22,6 +22,7 @@ from minerconfig.bluetooth.processors.bluetooh_services_processor import Bluetoo
 from minerconfig.bluetooth.processors.led_processor import LEDProcessor
 from minerconfig.bluetooth.processors.bluetooth_advertisement_processor import BluetoothAdvertisementProcessor
 
+from minerconfig.file_loader import read_eth0_mac_address, read_onboarding_key
 
 # Protobuf Imports
 # import lib.protos.add_gateway_pb2
@@ -34,13 +35,16 @@ from minerconfig.bluetooth.processors.bluetooth_advertisement_processor import B
 # from gpiozero import Button, LED
 
 class ConfigApp:
-    def __init__(self, sentry_dsn, balena_app_name, balena_device_uuid, variant):
+    def __init__(self, sentry_dsn, balena_app_name, balena_device_uuid, variant, eth0_mac_address_filepath, onboarding_key_filepath):
         self.init_sentry(sentry_dsn, balena_app_name, balena_device_uuid, variant)
         self.variant = variant
         self.restart_counter = 0
-        self.bluetooth_services_processor = BluetoothServicesProcessor()
+
+        eth0_mac_address = read_eth0_mac_address(eth0_mac_address_filepath)
+        onboarding_key, pub_key, animal_name = read_onboarding_key(onboarding_key_filepath)
+        self.bluetooth_services_processor = BluetoothServicesProcessor(eth0_mac_address, onboarding_key)
         # self.led_processor = LEDProcessor()
-        self.bluetooth_advertisement_processor = BluetoothAdvertisementProcessor(variant)
+        self.bluetooth_advertisement_processor = BluetoothAdvertisementProcessor(eth0_mac_address, variant)
         
     def start(self):
         logging.debug("Starting ConfigApp")

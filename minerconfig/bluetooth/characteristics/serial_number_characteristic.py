@@ -6,16 +6,13 @@ from minerconfig.helpers import string_to_dbus_byte_array
 
 class SerialNumberCharacteristic(Characteristic):
 
-    def __init__(self, service):
+    def __init__(self, service, eth0_mac_address):
         Characteristic.__init__(
                 self, minerconfig.constants.SERIAL_NUMBER_CHARACTERISTIC_UUID,
                 ["read"], service)
 
-        self.eth_mac_address = open(minerconfig.constants.ETH0_MAC_ADDRESS_PATH) \
-            .readline() \
-            .strip() \
-            .replace(":", "")
+        self.formatted_eth_mac_address = eth0_mac_address.replace(":", "")
 
     def ReadValue(self, options):
         logging.debug('Read Serial Number')
-        return string_to_dbus_byte_array(self.eth_mac_address)
+        return string_to_dbus_byte_array(self.formatted_eth_mac_address)

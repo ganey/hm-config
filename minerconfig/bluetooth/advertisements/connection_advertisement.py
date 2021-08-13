@@ -6,14 +6,10 @@ UNKNOWN_MAC_ADDRESS_VAL = "XXXXXX"
 
 class ConnectionAdvertisement(Advertisement):
     # BLE advertisement
-    def __init__(self, index, advertisement_type, variant):
+    def __init__(self, index, eth0_mac_address, advertisement_type, variant):
         Advertisement.__init__(self, index, advertisement_type)
         try:
-            mac_address_last6 = open(minerconfig.constants.ETH0_MAC_ADDRESS_PATH) \
-                .readline() \
-                .strip() \
-                .replace(":", "")[-6:] \
-                .upper()
+            mac_address_last6 = eth0_mac_address.replace(":", "")[-6:] 
 
         except FileNotFoundError:
             mac_address_last6 = UNKNOWN_MAC_ADDRESS_VAL

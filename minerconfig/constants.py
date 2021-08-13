@@ -1,6 +1,10 @@
 # This file contains all the UUIDs for each service to try and cut it down.
 # Also contains all the descriptors
 
+# Helium service
+HELIUM_SERVICE_UUID = "0fda92b2-44a2-4af2-84f5-fa682baa2b8d"
+ONBOARDING_KEY_FILEPATH = "/var/data/public_keys"
+
 # Generic UUIDs
 FIRMWARE_VERSION = "2021.01.01.1"
 DEVINFO_SVC_UUID = "180A"
@@ -20,7 +24,7 @@ SOFTWARE_VERSION_VALUE = "Software Version"
 
 # Onboarding Key
 ONBOARDING_KEY_CHARACTERISTIC_UUID = "d083b2bd-be16-4600-b397-61512ca2f5ad"
-ONBOARDING_KEY_VALUE = "Onboarding Key"
+ONBOARDING_KEY_LABEL = "Onboarding Key"
 
 # Public Key
 PUBLIC_KEY_CHARACTERISTIC_UUID = "0a852c59-50d3-4492-bfd3-22fe58a24f01"
@@ -81,5 +85,3 @@ wifiStatus = {
     "60": "invalid",  # Invalid Key
     "30": "failed"   # Connection Failed
 }
-
-ETH0_MAC_ADDRESS_PATH = "/sys/class/net/eth0/address"

@@ -7,6 +7,7 @@ import dbus
 import dbus.mainloop.glib
 from unittest.mock import patch, mock_open
 
+from tests.factories.connection_advertisement_factory import ConnectionAdvertisementFactory
 from minerconfig.bluetooth.advertisements.connection_advertisement import ConnectionAdvertisement
 from lib.cputemp.advertisement import Advertisement
 import minerconfig.constants
@@ -16,15 +17,14 @@ import minerconfig.constants
 DEFAULT_SERVICE_UUID = '0fda92b2-44a2-4af2-84f5-fa682baa2b8d'
 VALID_LE_ADVERTISEMENT_IFACE = 'org.bluez.LEAdvertisement1'
 INVALID_LE_ADVERTISEMENT_IFACE = 'org.fake.iface'
-TEST_ETH0_MAC_ADDRESS = 'A1:B2:C3:DD:E5:F6'
 
 class TestConnectionAdvertisement(TestCase):
 
+    # Prevent error log diff from being trimmed
     maxDiff = None
 
     def test_instantiation(self):
-        advertisement = ConnectionAdvertisement(100, "peripheral", "NEBHNT-OUT1")
-
+        advertisement = ConnectionAdvertisement(100, 'A1:B2:C3:DD:E5:F6_', 'peripheral_', 'NEBHNT_')
         self.assertEqual(
             advertisement.path,
             '/org/bluez/example/advertisement100'
@@ -34,14 +34,17 @@ class TestConnectionAdvertisement(TestCase):
             dbus._dbus.SystemBus
         )
         self.assertEqual(
+            advertisement.local_name,
+            'Nebra DE5F6_ Hotspot (NEBHNT_)'
+        )
+        self.assertEqual(
             advertisement.ad_type,
-            'peripheral'
+            'peripheral_'
         )
 
     @patch("builtins.open", new_callable=mock_open, read_data='a1:B2:c3:Dd:e5:f6')
     def test_get_properties(self, eth0_file_mock):
-        assert open(minerconfig.constants.ETH0_MAC_ADDRESS_PATH).read() == 'a1:B2:c3:Dd:e5:f6'
-        advertisement = ConnectionAdvertisement(101, "peripheral", "NEBHNT-IN1")
+        advertisement = ConnectionAdvertisement(101, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'NEBHNT-IN1')
         properties = advertisement.get_properties()
         expected = {
             'org.bluez.LEAdvertisement1': {
@@ -54,7 +57,7 @@ class TestConnectionAdvertisement(TestCase):
         self.assertDictEqual(properties, expected)
 
     def test_get_properties_extended(self):
-        advertisement = ConnectionAdvertisement(102, "peripheral", "NEBHNT-IN1")
+        advertisement = ConnectionAdvertisement(102, 'A1:B2:C3:DD:E5:F6', "peripheral", "NEBHNT-IN1")
 
         service_uuids = [str(uuid.uuid4())]
         advertisement.service_uuids = service_uuids
@@ -88,12 +91,12 @@ class TestConnectionAdvertisement(TestCase):
         self.assertDictEqual(properties, expected)
 
     def test_get_path(self):
-        advertisement = ConnectionAdvertisement(103, 'peripheral', 'COMP-HELIUM')
+        advertisement = ConnectionAdvertisement(103, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'COMP-HELIUM')
         path = advertisement.get_path()
         self.assertIsInstance(path, dbus.ObjectPath)
 
     def test_add_service_uuid(self):
-        advertisement = ConnectionAdvertisement(104, 'peripheral', 'COMP-HELIUM')
+        advertisement = ConnectionAdvertisement(104, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'COMP-HELIUM')
         service_uuid = str(uuid.uuid4())
         advertisement.add_service_uuid(service_uuid)
         # FIXME: There is currently test environment pollution and DEFAULT_SERVICE_ID has been
@@ -104,7 +107,7 @@ class TestConnectionAdvertisement(TestCase):
         )
 
     def test_add_solicit_uuid(self):
-        advertisement = ConnectionAdvertisement(105, 'peripheral', 'COMP-HELIUM')
+        advertisement = ConnectionAdvertisement(105, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'COMP-HELIUM')
         solicit_uuid = str(uuid.uuid4())
         advertisement.add_solicit_uuid(solicit_uuid)
         self.assertEqual(
@@ -113,7 +116,7 @@ class TestConnectionAdvertisement(TestCase):
         )
 
     def test_add_manufacturer_data(self):
-        advertisement = ConnectionAdvertisement(106, 'peripheral', 'DIY-RAK2287')
+        advertisement = ConnectionAdvertisement(106, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'DIY-RAK2287')
         manufacturer_data = {'name': 'Nebra'}
         advertisement.add_manufacturer_data(
             'Nebra',
@@ -133,7 +136,7 @@ class TestConnectionAdvertisement(TestCase):
         )
 
     def test_add_service_data(self):
-        advertisement = ConnectionAdvertisement(107, 'peripheral', 'DIY-RAK2287')
+        advertisement = ConnectionAdvertisement(107, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'DIY-RAK2287')
         service_uuid = str(uuid.uuid4())
         service_data = {'key': 'value'}
         advertisement.add_service_data(
@@ -153,7 +156,7 @@ class TestConnectionAdvertisement(TestCase):
         )
 
     def test_add_local_name(self):
-        advertisement = ConnectionAdvertisement(108, 'peripheral', 'DIY-RAK2287')
+        advertisement = ConnectionAdvertisement(108, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'DIY-RAK2287')
         local_name = 'LocalHost'
         advertisement.add_local_name(
             local_name
@@ -165,7 +168,7 @@ class TestConnectionAdvertisement(TestCase):
 
     @patch("builtins.open", new_callable=mock_open, read_data='a1:B2:c3:Dd:e5:f6')
     def test_getall_valid_iface(self, eth0_file_mock):
-        advertisement = ConnectionAdvertisement(109, 'peripheral', 'NEBHNT-HHTK2')
+        advertisement = ConnectionAdvertisement(109, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'NEBHNT-HHTK2')
         self.assertDictEqual(
             advertisement.GetAll(VALID_LE_ADVERTISEMENT_IFACE),
             {
@@ -177,7 +180,7 @@ class TestConnectionAdvertisement(TestCase):
         )
 
     def test_getall_invalid_iface(self):
-        advertisement = ConnectionAdvertisement(110, 'peripheral', 'NEBHNT-HHTK2')
+        advertisement = ConnectionAdvertisement(110, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'NEBHNT-HHTK2')
 
         exception = False
         exception_type = None
@@ -192,7 +195,7 @@ class TestConnectionAdvertisement(TestCase):
         self.assertIsInstance(exception_type, Exception)
 
     def test_release(self):
-        advertisement = ConnectionAdvertisement(111, 'peripheral', 'NEBHNT-HHTK2')
+        advertisement = ConnectionAdvertisement(111, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'NEBHNT-HHTK2')
 
         out = StringIO()
         sys.stdout = out
@@ -207,7 +210,7 @@ class TestConnectionAdvertisement(TestCase):
         self.assertEqual(result, None)
 
     def test_register_callback(self):
-        advertisement = ConnectionAdvertisement(112, 'peripheral', 'NEBHNT-HHTK2')
+        advertisement = ConnectionAdvertisement(112, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'NEBHNT-HHTK2')
 
         out = StringIO()
         sys.stdout = out
@@ -222,7 +225,7 @@ class TestConnectionAdvertisement(TestCase):
         self.assertEqual(result, None)
 
     def test_register_ad_error_callback(self):
-        advertisement = ConnectionAdvertisement(70, 'peripheral', 'NEBHNT-HHTK2')
+        advertisement = ConnectionAdvertisement(113, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'NEBHNT-HHTK2')
 
         out = StringIO()
         sys.stdout = out
@@ -246,7 +249,7 @@ class TestConnectionAdvertisement(TestCase):
             mock_findadapter,
             mock_getbus
     ):
-        advertisement = ConnectionAdvertisement(75, 'peripheral', 'NEBHNT-HHTK2')
+        advertisement = ConnectionAdvertisement(114, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'NEBHNT-HHTK2')
         result = advertisement.register()
 
         mock_dbus_interface.assert_called()
@@ -268,7 +271,7 @@ class TestConnectionAdvertisement(TestCase):
         out = StringIO()
         sys.stdout = out
 
-        advertisement = ConnectionAdvertisement(80, 'peripheral', 'NEBHNT-HHTK2')
+        advertisement = ConnectionAdvertisement(115, 'A1:B2:C3:DD:E5:F6', 'peripheral', 'NEBHNT-HHTK2')
         result = advertisement.unregister()
 
         mock_dbus_interface.assert_called()

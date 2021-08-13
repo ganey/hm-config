@@ -1,38 +1,7 @@
 
 
-# class OnboardingKeyCharacteristic(Characteristic):
-#     def __init__(self, service):
-#         Characteristic.__init__(
-#                 self, uuids.ONBOARDING_KEY_CHARACTERISTIC_UUID,
-#                 ["read"], service)
-#         self.add_descriptor(OnboardingKeyDescriptor(self))
-#         self.add_descriptor(utf8Format(self))
-
-#     def ReadValue(self, options):
-#         logging.debug('Read Onboarding Key')
-#         value = []
-#         val = onboardingKey
-
-#         for c in val:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
 
 
-# class OnboardingKeyDescriptor(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, uuids.USER_DESC_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-#         value = []
-#         desc = uuids.ONBOARDING_KEY_VALUE
-
-#         for c in desc:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
 
 
 # class PublicKeyCharacteristic(Characteristic):

@@ -6,6 +6,17 @@ The base repository for the Python Application is in the subfolder config-python
 
 ## Local development environment
 
+Running locally:
+
+```
+PYTHONPATH=./ \
+ONBOARDING_KEY_FILEPATH=./example/onboarding_key.txt \
+ETH0_MAC_ADDRESS_PATH=./example/eth0_mac_address.txt \ 
+    python minerconfig
+
+    PYTHONPATH=./ ONBOARDING_KEY_FILEPATH=./example/onboarding_key.txt ETH0_MAC_ADDRESS_PATH=./example/eth0_mac_address.txt python minerconfig
+```
+
 Because the stack is tightly intertwined with Balena, the easiest way to test the code base on your own Raspberry Pi in your own Balena project.
 The code has been developped and tested with the Raspberry Pi 3 B+. There are a few ways to build this app:
 
@@ -53,7 +64,7 @@ Assuming virtualenv has been activated, execute the following command to run the
 pip install -r test-requirements.txt
 pytest
 # Or test and run coverage report, with failure under 50%
-pytest --cov=config_app --cov-fail-under=50
+PYTHONPATH=./ pytest --cov=minerconfig --cov=lib
 ```
 
 ## Generating protobufs
