@@ -30,6 +30,6 @@ class HeliumService(Service):
         self.add_characteristic(AssertLocationCharacteristic(self))
         self.add_characteristic(AddGatewayCharacteristic(self))
         self.add_characteristic(WifiConnectCharacteristic(self))
-        # self.add_characteristic(EthernetOnlineCharacteristic(self))
+        self.add_characteristic(EthernetOnlineCharacteristic(self))
 #         self.add_characteristic(SoftwareVersionCharacteristic(self))
 #         self.add_characteristic(WiFiRemoveCharacteristic(self))

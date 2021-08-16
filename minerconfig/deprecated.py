@@ -79,25 +79,6 @@
 
 
 
-
-
-# class EthernetOnlineDescriptor(Descriptor):
-
-#     def __init__(self, characteristic):
-#         Descriptor.__init__(
-#                 self, minerconfig.constants.USER_DESC_DESCRIPTOR_UUID,
-#                 ["read"],
-#                 characteristic)
-
-#     def ReadValue(self, options):
-#         value = []
-#         desc = minerconfig.constants.ETHERNET_ONLINE_VALUE
-
-#         for c in desc:
-#             value.append(dbus.Byte(c.encode()))
-#         return value
-
-
 # class SoftwareVersionCharacteristic(Characteristic):
 #     def __init__(self, service):
 #         Characteristic.__init__(

@@ -74,6 +74,11 @@ RUN apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# DEBUGGING
+COPY example/ example/
+ENV ONBOARDING_KEY_FILEPATH=/opt/example/onboarding_key.txt 
+ENV ETH0_MAC_ADDRESS_PATH=/opt/example/eth0_mac_address.txt 
+
 # Run start-gateway-config script
 ENTRYPOINT ["sh", "/opt/start-gateway-config.sh"]
 # CMD while true; do sleep 1000; done

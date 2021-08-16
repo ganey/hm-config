@@ -10,7 +10,7 @@ Running locally:
 
 ```
 PYTHONPATH=./ \
-ONBOARDING_KEY_FILEPATH=./example/onboarding_key.txt \
+ONBOARDING_KEY_FILEPATH=./example/onboarding_key\.txt \
 ETH0_MAC_ADDRESS_PATH=./example/eth0_mac_address.txt \ 
     python minerconfig
 
@@ -24,6 +24,16 @@ The code has been developped and tested with the Raspberry Pi 3 B+. There are a 
 2. Cross-compile locally only: `docker buildx build --platform linux/arm64 .`
 3. ARM build on Balena: `git push balena YourLocalBranch:master` (deprecated)
 4. Build directly on device with [local mode](https://www.balena.io/docs/learn/develop/local-mode/): `balena push local` (over 10 hours)
+
+
+```
+SENTRY_DSN=https://a1be0c326c994f12ae250cc5a81782d5@o950905.ingest.sentry.io/5899573 \
+BALENA_DEVICE_UUID=test_balena_device_uuid \
+VARIANT=test_variant \
+ONBOARDING_KEY_FILEPATH=/opt/example/onboarding_key.txt \
+ETH0_MAC_ADDRESS_PATH=/opt/example/eth0_mac_address.txt \ 
+balena deploy hm-diag --build --debug
+```
 
 ### Balena setup
 * Create a new Balena project for Raspberry Pi 3 (64 Bit)

@@ -17,8 +17,8 @@ def read_onboarding_key(onboarding_key_filepath):
             public_keys_file = open(onboarding_key_filepath).readline().split('"')
             break
         except FileNotFoundError:
-            logging.debug('Waiting for keyfile')
-        sleep(RETRY_SLEEP_SECONDS)
+            logging.debug('Waiting for keyfile in %s. Will try again in %s seconds' % (onboarding_key_filepath, RETRY_SLEEP_SECONDS))
+            sleep(RETRY_SLEEP_SECONDS)
 
     # Keyfile exists, now running.
     pub_key = str(public_keys_file[1])

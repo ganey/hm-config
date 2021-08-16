@@ -76,7 +76,7 @@ WIFI_CONNECT_KEY_LABEL = "WiFi Connect"
 
 # Ethernet Online
 ETHERNET_ONLINE_CHARACTERISTIC_UUID = "e5866bd6-0288-4476-98ca-ef7da6b4d289"
-ETHERNET_ONLINE_VALUE = "Ethernet Online"
+ETHERNET_ONLINE_LABEL = "Ethernet Online"
 
 # WiFi Codes
 wifiStatus = {
