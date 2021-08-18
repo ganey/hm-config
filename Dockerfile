@@ -77,7 +77,9 @@ RUN apt-get autoremove -y && \
 # DEBUGGING
 COPY example/ example/
 ENV ONBOARDING_KEY_FILEPATH=/opt/example/onboarding_key.txt 
-ENV ETH0_MAC_ADDRESS_PATH=/opt/example/eth0_mac_address.txt 
+# ENV ETH0_MAC_ADDRESS_PATH=/opt/example/eth0_mac_address.txt
+ENV SENTRY_DSN=https://a1be0c326c994f12ae250cc5a81782d5@o950905.ingest.sentry.io/5899573
+# END DEBUGGING
 
 # Run start-gateway-config script
 ENTRYPOINT ["sh", "/opt/start-gateway-config.sh"]

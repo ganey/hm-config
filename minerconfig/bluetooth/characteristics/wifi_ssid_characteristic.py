@@ -11,24 +11,19 @@ from minerconfig.helpers import is_valid_ssid
 
 class WifiSSIDCharacteristic(Characteristic):
 
-    global wifiCache
-
-    def __init__(self, service):
+    def __init__(self, service, shared_state):
         Characteristic.__init__(
                 self, minerconfig.constants.WIFI_SSID_CHARACTERISTIC_UUID,
                 ["read"], service)
         self.add_descriptor(WifiSSIDDescriptor(self))
         self.add_descriptor(UTF8FormatDescriptor(self))
-        self.wifi_list_cache = []
-
-    def update_wifi_list_cache(self, wifi_list_cache):
-        self.wifi_list_cache = wifi_list_cache
+        self.shared_state = shared_state
 
     def ReadValue(self, options):
 
         logging.debug('Read WiFi SSID')
         active_connection = ""
-        for network in self.wifi_list_cache:
+        for network in self.shared_state.wifi_list_cache:
             ssid_str = str(network.ssid)
 
             if(is_valid_ssid(ssid_str)):

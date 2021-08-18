@@ -8,29 +8,37 @@ from minerconfig.bluetooth.advertisements.connection_advertisement import Connec
 ADVERTISEMENT_TYPE = 'peripheral'
 ADVERTISEMENT_INDEX = 0
 ADVERTISEMENT_SECONDS = 300
+ADVERTISEMENT_OFF_SLEEP_SECONDS = 5
 
 class BluetoothAdvertisementProcessor:
-    def __init__(self, eth0_mac_address, variant):
-        self.should_advertise = True
+    def __init__(self, eth0_mac_address, variant, shared_state):
+        self.shared_state = shared_state
         self.connection_advertisement = ConnectionAdvertisement(ADVERTISEMENT_INDEX, eth0_mac_address, ADVERTISEMENT_TYPE, variant)
 
     def run(self):
-        logging.debug("Advertising Bluetooth")
+        logging.debug("Running Bluetooth advertisement")
+        
         while True:
-            if(self.should_advertise is True):
-                self.should_advertise = False
-                # scanWifi = True
+            if(self.shared_state.should_advertise_bluetooth is True):
+                # Prepare to advertise by first scanning wifi and stopping any existing connections
+                self.shared_state.should_advertise_bluetooth = False
+                self.shared_state.should_scan_wifi = True
                 try:
                     BleTools.disconnect_connections()
                 except TypeError:
                     # Most Likely Already Disconnected
                     pass
+
+                # Start advertising
                 self.connection_advertisement.register()
-                # advertisementLED = True
+                logging.debug("Starting Bluetooth advertisement")
+                self.shared_state.is_advertising_bluetooth = True
+
+                # Stop advertising
                 sleep(ADVERTISEMENT_SECONDS)
                 logging.debug("Stopping Bluetooth advertisement")
                 self.connection_advertisement.unregister()
-                # advertisementLED = False
-                # scanWifi = False
+                self.shared_state.is_advertising_bluetooth = False
+                self.shared_state.should_scan_wifi = False
             else:
-                sleep(5)
+                sleep(ADVERTISEMENT_OFF_SLEEP_SECONDS)

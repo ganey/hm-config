@@ -27,11 +27,6 @@ The code has been developped and tested with the Raspberry Pi 3 B+. There are a 
 
 
 ```
-SENTRY_DSN=https://a1be0c326c994f12ae250cc5a81782d5@o950905.ingest.sentry.io/5899573 \
-BALENA_DEVICE_UUID=test_balena_device_uuid \
-VARIANT=test_variant \
-ONBOARDING_KEY_FILEPATH=/opt/example/onboarding_key.txt \
-ETH0_MAC_ADDRESS_PATH=/opt/example/eth0_mac_address.txt \ 
 balena deploy hm-diag --build --debug
 ```
 

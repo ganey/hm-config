@@ -12,22 +12,19 @@ from minerconfig.helpers import is_valid_ssid
 
 class WifiServicesCharacteristic(Characteristic):
 
-    def __init__(self, service):
+    def __init__(self, service, shared_state):
         Characteristic.__init__(
                 self, minerconfig.constants.WIFI_SERVICES_CHARACTERISTIC_UUID,
                 ["read"], service)
         self.add_descriptor(WifiServicesDescriptor(self))
         self.add_descriptor(OpaqueStructureDescriptor(self))
-        self.wifi_list_cache = []
-
-    def update_wifi_list_cache(self, wifi_list_cache):
-        self.wifi_list_cache = wifi_list_cache
+        self.shared_state = shared_state
 
     def ReadValue(self, options):
         logging.debug('Read WiFi Services')
         known_wifi_services = lib.protos.wifi_services_pb2.wifi_services_v1()
 
-        for network in self.wifi_list_cache:
+        for network in self.shared_state.wifi_list_cache:
             ssid_str = str(network.ssid)
 
             if(is_valid_ssid(ssid_str)):

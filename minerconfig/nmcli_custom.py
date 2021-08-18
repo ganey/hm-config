@@ -84,3 +84,5 @@ radio = RadioControl(_syscmd)
 
 def disable_use_sudo():
     _syscmd.disable_use_sudo()
+
+disable_use_sudo()
