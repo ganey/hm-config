@@ -1,4 +1,5 @@
-import logging
+from minerconfig.logger import logger 
+
 import dbus
 from time import sleep
 import h3
@@ -24,7 +25,7 @@ class AssertLocationCharacteristic(Characteristic):
 
     def AddGatewayCallback(self):
         if self.notifying:
-            logging.debug('Callback Assert Location')
+            logger.debug('Callback Assert Location')
             value = []
             val = ""
 
@@ -34,7 +35,7 @@ class AssertLocationCharacteristic(Characteristic):
 
     def StartNotify(self):
 
-        logging.debug('Notify Assert Location')
+        logger.debug('Notify Assert Location')
         if self.notifying:
             return
 
@@ -48,32 +49,32 @@ class AssertLocationCharacteristic(Characteristic):
         self.notifying = False
 
     def WriteValue(self, value, options):
-        logging.debug('Write Assert Location')
-        logging.debug(value)
+        logger.debug('Write Assert Location')
+        logger.debug(value)
         assLocDet = assert_location_pb2.assert_loc_v1()
-        logging.debug('PB2C')
+        logger.debug('PB2C')
         assLocDet.ParseFromString(bytes(value))
-        logging.debug('PB2P')
-        logging.debug(str(assLocDet))
+        logger.debug('PB2P')
+        logger.debug(str(assLocDet))
         miner_bus = dbus.SystemBus()
         miner_object = miner_bus.get_object('com.helium.Miner', '/')
         sleep(0.05)
         miner_interface = dbus.Interface(miner_object, 'com.helium.Miner')
         sleep(0.05)
         h3String = h3.geo_to_h3(assLocDet.lat, assLocDet.lon, 12)
-        # logging.debug(h3String)
+        # logger.debug(h3String)
         # H3String, Owner, Nonce, Amount, Fee, Paye
         minerAssertRequest = \
             miner_interface. \
             AssertLocation(h3String,
                            assLocDet.owner, assLocDet.nonce, assLocDet.amount,
                            assLocDet.fee, assLocDet.payer)
-        # logging.debug(assLocDet)
+        # logger.debug(assLocDet)
         self.notifyValue = minerAssertRequest
 
     def ReadValue(self, options):
-        logging.debug('Read Assert Location')
-        # logging.debug(options)
+        logger.debug('Read Assert Location')
+        # logger.debug(options)
         if("offset" in options):
             cutDownArray = self.notifyValue[int(options["offset"]):]
             return cutDownArray

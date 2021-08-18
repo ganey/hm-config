@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger 
 from time import sleep
 
 import minerconfig.constants
@@ -17,7 +17,7 @@ def read_onboarding_key(onboarding_key_filepath):
             public_keys_file = open(onboarding_key_filepath).readline().split('"')
             break
         except FileNotFoundError:
-            logging.debug('Waiting for keyfile in %s. Will try again in %s seconds' % (onboarding_key_filepath, RETRY_SLEEP_SECONDS))
+            logger.debug('Waiting for keyfile in %s. Will try again in %s seconds' % (onboarding_key_filepath, RETRY_SLEEP_SECONDS))
             sleep(RETRY_SLEEP_SECONDS)
 
     # Keyfile exists, now running.

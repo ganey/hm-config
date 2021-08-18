@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger 
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants
@@ -13,5 +13,5 @@ class ManufacturerNameCharacteristic(Characteristic):
                 ["read"], service)
 
     def ReadValue(self, options):
-        logging.debug('Read Manufacturer')
+        logger.debug('Read Manufacturer')
         return string_to_dbus_byte_array(MANUFACTURER_NAME)

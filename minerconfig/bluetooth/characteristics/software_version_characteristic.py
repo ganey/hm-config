@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger 
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants
@@ -17,5 +17,5 @@ class SoftwareVersionCharacteristic(Characteristic):
         self.firmware_version = firmware_version
 
     def ReadValue(self, options):
-        logging.debug('Read Firmware')
+        logger.debug('Read Firmware')
         return string_to_dbus_byte_array(self.firmware_version)

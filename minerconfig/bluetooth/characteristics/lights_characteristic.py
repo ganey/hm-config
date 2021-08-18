@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger 
 import os
 
 from lib.cputemp.service import Characteristic
@@ -20,5 +20,5 @@ class LightsCharacteristic(Characteristic):
         self.add_descriptor(UTF8FormatDescriptor(self))
 
     def ReadValue(self, options):
-        logging.debug('Read Lights')
+        logger.debug('Read Lights')
         return string_to_dbus_byte_array(DEFAULT_LIGHTS_VALUE)

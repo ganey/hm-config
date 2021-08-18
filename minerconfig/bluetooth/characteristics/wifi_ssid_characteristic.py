@@ -28,6 +28,11 @@ class WifiSSIDCharacteristic(Characteristic):
 
             if(is_valid_ssid(ssid_str)):
                 if(network.in_use):
+                    logging.debug("SSID in use: %s" % ssid_str)
                     active_connection = ssid_str
+                else:
+                    logging.debug("SSID not in use: %s" % ssid_str)
+            else:
+                logging.debug("Ignoring SSID: %s" % ssid_str)
 
         return string_to_dbus_byte_array(active_connection)

@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger 
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants
@@ -26,7 +26,7 @@ class WifiConnectCharacteristic(Characteristic):
 
     def WiFiConnectCallback(self):
         if self.notifying:
-            logging.debug('Callback WiFi Connect')
+            logger.debug('Callback WiFi Connect')
             value = []
             self.wifi_status = "timeout"
 
@@ -38,7 +38,7 @@ class WifiConnectCharacteristic(Characteristic):
 
     def StartNotify(self):
 
-        logging.debug('Notify WiFi Connect')
+        logger.debug('Notify WiFi Connect')
         if self.notifying:
             return
 
@@ -55,17 +55,17 @@ class WifiConnectCharacteristic(Characteristic):
         self.notifying = False
 
     def WriteValue(self, value, options):
-        logging.debug('Write WiFi Connect')
+        logger.debug('Write WiFi Connect')
         if(self.check_wifi_status() == "connected"):
             nmcli_custom.device.disconnect('wlan0')
-            logging.debug('Disconnected From Wifi')
-        # logging.debug(value)
+            logger.debug('Disconnected From Wifi')
+        # logger.debug(value)
         wiFiDetails = wifi_connect_pb2.wifi_connect_v1()
-        # logging.debug('PB2C')
+        # logger.debug('PB2C')
         wiFiDetails.ParseFromString(bytes(value))
-        # logging.debug('PB2P')
+        # logger.debug('PB2P')
         self.wifi_status = "already"
-        logging.debug(str(wiFiDetails.service))
+        logger.debug(str(wiFiDetails.service))
 
         nmcli_custom.device.wifi_connect(str(wiFiDetails.service),
                                   str(wiFiDetails.password))
@@ -73,14 +73,14 @@ class WifiConnectCharacteristic(Characteristic):
 
     def check_wifi_status(self):
         # Check the current wi-fi connection status
-        logging.debug('Check WiFi Connect')
+        logger.debug('Check WiFi Connect')
         state = str(nmcli_custom.device.show('wlan0')['GENERAL.STATE'].split(" ")[0])
-        logging.debug(str(minerconfig.constants.wifiStatus[state]))
+        logger.debug(str(minerconfig.constants.wifiStatus[state]))
         return minerconfig.constants.wifiStatus[state]
 
     def ReadValue(self, options):
 
-        logging.debug('Read WiFi Connect')
+        logger.debug('Read WiFi Connect')
         self.wifi_status = self.check_wifi_status()
         value = []
 

@@ -15,7 +15,7 @@ class DiagnosticsProcessor:
         self.diagnostics_json_filepath = diagnostics_json_filepath
 
     def run(self):
-        logging.debug("Diagnostics Thread Started")
+        logging.debug("Diagnostics DiagnosticsProcessor")
 
         while True:
             self.read_diagnostics()

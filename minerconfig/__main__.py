@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger 
 import os
 
 from minerconfig.minerconfig_app import ConfigApp
@@ -11,17 +11,18 @@ FIRMWARE_VERSION = os.getenv('FIRMWARE_VERSION')
 ETH0_MAC_ADDRESS_PATH = os.getenv('ETH0_MAC_ADDRESS_PATH', '/sys/class/net/eth0/address')
 ONBOARDING_KEY_FILEPATH = os.getenv('ONBOARDING_KEY_FILEPATH', '/var/data/public_keys')
 DIAGNOSTICS_JSON_FILEPATH = os.getenv('DIAGNOSTICS_JSON_FILEPATH', '/var/data/nebraDiagnostics.json')
+ETHERNET_IS_ONLINE_FILEPATH = os.getenv('ETHERNET_IS_ONLINE_FILEPATH', '/sys/class/net/eth0/carrier')
 
 def main():
-    setup_logging()
+    # setup_logger()
     validate_env()
     start_config_app()
 
-def setup_logging():
-    logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
+# def setup_logger():
+#     logger.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
 
 def validate_env():
-    logging.debug("Starting with the following ENV:\n\
+    logger.debug("Starting with the following ENV:\n\
         SENTRY_DSN=%s\n\
         BALENA_APP_NAME=%s\n\
         BALENA_DEVICE_UUID=%s\n\
@@ -29,19 +30,22 @@ def validate_env():
         ETH0_MAC_ADDRESS_PATH=%s\n\
         ONBOARDING_KEY_FILEPATH=%s\n\
         DIAGNOSTICS_JSON_FILEPATH=%s\n\
+        ETHERNET_IS_ONLINE_FILEPATH=%s\n\
         FIRMWARE_VERSION=%s\n" % 
         (SENTRY_DSN, BALENA_APP_NAME, BALENA_DEVICE_UUID, VARIANT, 
-            ETH0_MAC_ADDRESS_PATH, ONBOARDING_KEY_FILEPATH, DIAGNOSTICS_JSON_FILEPATH, FIRMWARE_VERSION))
+            ETH0_MAC_ADDRESS_PATH, ONBOARDING_KEY_FILEPATH, DIAGNOSTICS_JSON_FILEPATH, 
+            ETHERNET_IS_ONLINE_FILEPATH, FIRMWARE_VERSION))
 
     # TODO check if any NONE
 
 def start_config_app():
     config_app = ConfigApp(SENTRY_DSN, BALENA_APP_NAME, BALENA_DEVICE_UUID, VARIANT, 
-        ETH0_MAC_ADDRESS_PATH, ONBOARDING_KEY_FILEPATH, DIAGNOSTICS_JSON_FILEPATH, FIRMWARE_VERSION)
+        ETH0_MAC_ADDRESS_PATH, ONBOARDING_KEY_FILEPATH, ETHERNET_IS_ONLINE_FILEPATH, 
+        DIAGNOSTICS_JSON_FILEPATH, FIRMWARE_VERSION)
     try:
         config_app.start()
     except Exception as e:
-        logging.error(e)
+        logger.error(e)
         config_app.stop()
 
 if __name__ == "__main__":

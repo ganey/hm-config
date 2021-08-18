@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger 
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants
@@ -21,7 +21,7 @@ class WifiServicesCharacteristic(Characteristic):
         self.shared_state = shared_state
 
     def ReadValue(self, options):
-        logging.debug('Read WiFi Services')
+        logger.debug('Read WiFi Services')
         known_wifi_services = lib.protos.wifi_services_pb2.wifi_services_v1()
 
         for network in self.shared_state.wifi_list_cache:
@@ -32,7 +32,7 @@ class WifiServicesCharacteristic(Characteristic):
                 
                 if(ssid_unknown):
                     known_wifi_services.services.append(ssid_str)
-                    logging.debug(ssid_str)
+                    logger.debug(ssid_str)
 
         value = []
         val = known_wifi_services.SerializeToString()

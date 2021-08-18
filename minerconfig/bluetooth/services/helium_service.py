@@ -18,7 +18,7 @@ from minerconfig.bluetooth.characteristics.wifi_remove_characteristic import Wif
 
 class HeliumService(Service):
 
-    def __init__(self, index, eth0_mac_address, onboarding_key, pub_key, firmware_version, shared_state):
+    def __init__(self, index, eth0_mac_address, onboarding_key, pub_key, firmware_version, ethernet_is_online_filepath, shared_state):
 
         Service.__init__(self, index, minerconfig.constants.HELIUM_SERVICE_UUID, True)
         self.add_characteristic(OnboardingKeyCharacteristic(self, onboarding_key))
@@ -32,6 +32,6 @@ class HeliumService(Service):
         self.add_characteristic(AssertLocationCharacteristic(self))
         self.add_characteristic(AddGatewayCharacteristic(self))
         self.add_characteristic(WifiConnectCharacteristic(self))
-        self.add_characteristic(EthernetOnlineCharacteristic(self))
+        self.add_characteristic(EthernetOnlineCharacteristic(self, ethernet_is_online_filepath))
         self.add_characteristic(SoftwareVersionCharacteristic(self, firmware_version))
         self.add_characteristic(WifiRemoveCharacteristic(self))

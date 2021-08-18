@@ -1,4 +1,5 @@
-import logging
+from minerconfig.logger import logger 
+
 from time import sleep
 
 from lib.cputemp.bletools import BleTools
@@ -16,7 +17,7 @@ class BluetoothAdvertisementProcessor:
         self.connection_advertisement = ConnectionAdvertisement(ADVERTISEMENT_INDEX, eth0_mac_address, ADVERTISEMENT_TYPE, variant)
 
     def run(self):
-        logging.debug("Running Bluetooth advertisement")
+        logger.debug("Running BluetoothAdvertisementProcessor")
         
         while True:
             if(self.shared_state.should_advertise_bluetooth is True):
@@ -31,12 +32,12 @@ class BluetoothAdvertisementProcessor:
 
                 # Start advertising
                 self.connection_advertisement.register()
-                logging.debug("Starting Bluetooth advertisement")
+                logger.debug("Starting Bluetooth advertisement")
                 self.shared_state.is_advertising_bluetooth = True
 
                 # Stop advertising
                 sleep(ADVERTISEMENT_SECONDS)
-                logging.debug("Stopping Bluetooth advertisement")
+                logger.debug("Stopping Bluetooth advertisement")
                 self.connection_advertisement.unregister()
                 self.shared_state.is_advertising_bluetooth = False
                 self.shared_state.should_scan_wifi = False

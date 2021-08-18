@@ -8,3 +8,4 @@ class MinerconfigSharedState:
         self.should_scan_wifi = False
         self.should_advertise_bluetooth = True
         self.is_advertising_bluetooth = False
+        self.are_diagnostics_ok = False

@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger 
 import dbus
 
 from lib.cputemp.service import Characteristic
@@ -18,5 +18,5 @@ class PublicKeyCharacteristic(Characteristic):
         self.pub_key = pub_key
 
     def ReadValue(self, options):
-        logging.debug('Read Public Key')
+        logger.debug("Read Public Key: %s", self.pub_key)
         return string_to_dbus_byte_array(self.pub_key)

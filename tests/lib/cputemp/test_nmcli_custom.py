@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 
 # Test Cases
 from subprocess import CalledProcessError  # nosec
-from minerconfig.nmcli_custom import CustomSystemCommand
+from minerconfig.nmcli_custom import CustomSystemCommand, enable_use_sudo
 from minerconfig.nmcli_custom import _syscmd
 from minerconfig.nmcli_custom import disable_use_sudo
 
@@ -104,9 +104,13 @@ class TestCustomSystemCommandHandleError(TestCase):
 
 class TestDisableUseSudo(TestCase):
 
-    def test_disable_use_sudo(self):
+    def test_use_sudo_disabled_default(self):
+        self.assertFalse(_syscmd._use_sudo)
+
+    def test_use_sudo(self):
         # Check that calling disable_use_sudo actually toggles the
         # use_sudo flag within the CustomSystemCommand object.
+        enable_use_sudo()
         self.assertTrue(_syscmd._use_sudo)
         disable_use_sudo()
         self.assertFalse(_syscmd._use_sudo)
