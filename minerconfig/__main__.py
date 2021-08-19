@@ -1,4 +1,4 @@
-from minerconfig.logger import logger 
+from minerconfig.logger import logger
 import os
 
 from minerconfig.minerconfig_app import ConfigApp

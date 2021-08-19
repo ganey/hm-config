@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger
 import os
 
 from lib.cputemp.service import Characteristic
@@ -12,7 +12,7 @@ class FirmwareRevisionCharacteristic(Characteristic):
                 ["read"], service)
 
     def ReadValue(self, options):
-        logging.debug('Read Firmware')
+        logger.debug('Read Firmware')
         # Intentionally reading the env variable each time in case it changes over
         # the application's lifetime
         firmware_version = os.getenv('FIRMWARE_VERSION')

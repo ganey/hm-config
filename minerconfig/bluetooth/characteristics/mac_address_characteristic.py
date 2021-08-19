@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants
@@ -17,6 +17,6 @@ class MacAddressCharacteristic(Characteristic):
         self.eth0_mac_address = eth0_mac_address.replace(':', '')
 
     def ReadValue(self, options):
-        logging.debug('Read Mac Address')
+        logger.debug('Read Mac Address')
         return string_to_dbus_byte_array(self.eth0_mac_address)
 

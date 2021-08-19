@@ -1,8 +1,6 @@
-import sys
-import logging
+from minerconfig.logger import logger
 from time import sleep
 
-from lib.cputemp.bletools import BleTools
 import json
 
 from minerconfig.bluetooth.advertisements.connection_advertisement import ConnectionAdvertisement
@@ -15,13 +13,14 @@ class DiagnosticsProcessor:
         self.diagnostics_json_filepath = diagnostics_json_filepath
 
     def run(self):
-        logging.debug("Diagnostics DiagnosticsProcessor")
+        logger.debug("Diagnostics DiagnosticsProcessor")
 
         while True:
             self.read_diagnostics()
             sleep(DIAGNOSTICS_REFRESH_SECONDS)
 
     def read_diagnostics_and_get_ok(self):
+        logger.debug("Reading diagnostics from %s" % self.diagnostics_json_filepath)
         diagnostics_json_file = open(self.diagnostics_json_filepath)
         diagnostics_json = json.load(diagnostics_json_file)
         return diagnostics_json['PF'] is True
@@ -39,5 +38,5 @@ class DiagnosticsProcessor:
         except ValueError:
             self.shared_state.are_diagnostics_ok = False
 
-        except:
-            logging.warn("Unexpected error %s" % sys.exc_info()[0])
+        except Exception as e:
+            logger.warn("Unexpected error when trying to read diagnostics file: %s" % e)

@@ -1,5 +1,4 @@
 from lib.cputemp.advertisement import Advertisement
-import minerconfig.constants
 
 ADVERTISEMENT_SERVICE_UUID = "0fda92b2-44a2-4af2-84f5-fa682baa2b8d"
 UNKNOWN_MAC_ADDRESS_VAL = "XXXXXX"

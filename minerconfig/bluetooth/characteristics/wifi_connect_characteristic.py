@@ -6,8 +6,6 @@ import dbus
 
 from minerconfig.bluetooth.descriptors.wifi_connect_descriptor import WiFiConnectDescriptor
 from minerconfig.bluetooth.descriptors.opaque_structure_descriptor import OpaqueStructureDescriptor
-from minerconfig.helpers import string_to_dbus_byte_array
-from minerconfig.helpers import is_valid_ssid
 
 import lib.protos.wifi_connect_pb2 as wifi_connect_pb2
 import minerconfig.nmcli_custom as nmcli_custom

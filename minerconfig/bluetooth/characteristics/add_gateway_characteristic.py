@@ -1,7 +1,6 @@
-import logging
+from minerconfig.logger import logger
 import dbus
 from time import sleep
-import h3
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants
@@ -23,7 +22,7 @@ class AddGatewayCharacteristic(Characteristic):
 
     def AddGatewayCallback(self):
         if self.notifying:
-            logging.debug('Callback Add Gateway')
+            logger.debug('Callback Add Gateway')
             # value = []
             # val = ""
 
@@ -34,7 +33,7 @@ class AddGatewayCharacteristic(Characteristic):
 
     def StartNotify(self):
 
-        logging.debug('Notify Add Gateway')
+        logger.debug('Notify Add Gateway')
         if self.notifying:
             return
 
@@ -48,18 +47,18 @@ class AddGatewayCharacteristic(Characteristic):
         self.notifying = False
 
     def WriteValue(self, value, options):
-        logging.debug('Write Add Gateway')
+        logger.debug('Write Add Gateway')
         waitVal = []
         for c in "wait":
             waitVal.append(dbus.Byte(c.encode()))
         self.notifyValue = waitVal
 
-        # logging.debug(value)
+        # logger.debug(value)
         addGatewayDetails = add_gateway_pb2.add_gateway_v1()
-        # logging.debug('PB2C')
+        # logger.debug('PB2C')
         addGatewayDetails.ParseFromString(bytes(value))
-        # logging.debug('PB2P')
-        # logging.debug(str(addGatewayDetails))
+        # logger.debug('PB2P')
+        # logger.debug(str(addGatewayDetails))
         miner_bus = dbus.SystemBus()
         miner_object = miner_bus.get_object('com.helium.Miner', '/')
         sleep(0.05)
@@ -69,15 +68,15 @@ class AddGatewayCharacteristic(Characteristic):
             miner_interface. \
             AddGateway(addGatewayDetails.owner, addGatewayDetails.fee,
                        addGatewayDetails.amount, addGatewayDetails.payer)
-        # logging.debug(addMinerRequest)
-        logging.debug("Adding Response")
+        # logger.debug(addMinerRequest)
+        logger.debug("Adding Response")
         self.notifyValue = addMinerRequest
 
     def ReadValue(self, options):
-        logging.debug('Read Add Gateway')
+        logger.debug('Read Add Gateway')
         if("offset" in options):
             cutDownArray = self.notifyValue[int(options["offset"]):]
             return cutDownArray
         else:
             return self.notifyValue
-        # logging.debug(self.notifyValue)
+        # logger.debug(self.notifyValue)

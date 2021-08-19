@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants
@@ -16,6 +16,6 @@ class OnboardingKeyCharacteristic(Characteristic):
         self.onboarding_key = onboarding_key
 
     def ReadValue(self, options):
-        logging.debug("Read Onboarding Key")
-        logging.debug("Onboarding key:  %s" % self.onboarding_key)
+        logger.debug("Read Onboarding Key")
+        logger.debug("Onboarding key:  %s" % self.onboarding_key)
         return string_to_dbus_byte_array(self.onboarding_key)

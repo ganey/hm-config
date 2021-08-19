@@ -1,15 +1,11 @@
 from minerconfig.logger import logger 
 
-import dbus
-from time import sleep
-import h3
 from minerconfig.helpers import string_to_dbus_byte_array
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants
 from minerconfig.bluetooth.descriptors.ethernet_online_descriptor import EthernetOnlineDescriptor
 from minerconfig.bluetooth.descriptors.utf8_format_descriptor import UTF8FormatDescriptor
-import lib.protos.assert_location_pb2 as assert_location_pb2
 
 ETHERNET_IS_ONLINE_CARRIER_VAL = "1"
 

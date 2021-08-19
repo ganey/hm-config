@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants
@@ -14,5 +14,5 @@ class SerialNumberCharacteristic(Characteristic):
         self.formatted_eth_mac_address = eth0_mac_address.replace(":", "")
 
     def ReadValue(self, options):
-        logging.debug('Read Serial Number')
+        logger.debug('Read Serial Number')
         return string_to_dbus_byte_array(self.formatted_eth_mac_address)

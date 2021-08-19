@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants
@@ -21,7 +21,7 @@ class WifiConfiguredServicesCharacteristic(Characteristic):
         self.shared_state = shared_state
 
     def ReadValue(self, options):
-        logging.debug('Read WiFi CONFIGURED Services')
+        logger.debug('Read WiFi CONFIGURED Services')
         configured_wifi_services = lib.protos.wifi_services_pb2.wifi_services_v1()
 
 

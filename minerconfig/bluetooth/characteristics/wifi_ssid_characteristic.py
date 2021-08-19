@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants
@@ -21,18 +21,18 @@ class WifiSSIDCharacteristic(Characteristic):
 
     def ReadValue(self, options):
 
-        logging.debug('Read WiFi SSID')
+        logger.debug('Read WiFi SSID')
         active_connection = ""
         for network in self.shared_state.wifi_list_cache:
             ssid_str = str(network.ssid)
 
             if(is_valid_ssid(ssid_str)):
                 if(network.in_use):
-                    logging.debug("SSID in use: %s" % ssid_str)
+                    logger.debug("SSID in use: %s" % ssid_str)
                     active_connection = ssid_str
                 else:
-                    logging.debug("SSID not in use: %s" % ssid_str)
+                    logger.debug("SSID not in use: %s" % ssid_str)
             else:
-                logging.debug("Ignoring SSID: %s" % ssid_str)
+                logger.debug("Ignoring SSID: %s" % ssid_str)
 
         return string_to_dbus_byte_array(active_connection)

@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger
 from time import sleep
 
 from minerconfig import nmcli_custom
@@ -11,7 +11,7 @@ class WifiProcessor:
         self.shared_state = shared_state
 
     def run(self):
-        logging.debug("Wifi WifiProcessor")
+        logger.debug("Wifi WifiProcessor")
 
         while True:
             if(self.shared_state.should_scan_wifi is True):

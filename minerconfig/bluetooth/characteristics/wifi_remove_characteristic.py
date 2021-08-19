@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger
 
 from lib.cputemp.service import Characteristic
 import minerconfig.constants
@@ -23,7 +23,7 @@ class WifiRemoveCharacteristic(Characteristic):
 
     def wifi_remove_callback(self):
         if self.notifying:
-            logging.debug('Callback WiFi Remove')
+            logger.debug('Callback WiFi Remove')
             value = string_to_dbus_byte_array(self.wifi_status)
             self.PropertiesChanged(minerconfig.constants.GATT_CHRC_IFACE, {"Value": value}, [])
 
@@ -31,7 +31,7 @@ class WifiRemoveCharacteristic(Characteristic):
 
     def StartNotify(self):
 
-        logging.debug('Notify WiFi Remove')
+        logger.debug('Notify WiFi Remove')
         if self.notifying:
             return
 
@@ -45,13 +45,13 @@ class WifiRemoveCharacteristic(Characteristic):
         self.notifying = False
 
     def WriteValue(self, value, options):
-        logging.debug('Write WiFi Remove')
+        logger.debug('Write WiFi Remove')
         wifi_remove_ssid = wifi_remove_pb2.wifi_remove_v1()
         wifi_remove_ssid.ParseFromString(bytes(value))
         nmcli_custom.connection.delete(wifi_remove_ssid.service)
-        logging.debug('Connection %s should be deleted'
+        logger.debug('Connection %s should be deleted'
                       % wifi_remove_ssid.service)
 
     def ReadValue(self, options):
-        logging.debug('Read WiFi Renove')
+        logger.debug('Read WiFi Renove')
         return string_to_dbus_byte_array(self.wifistatus)

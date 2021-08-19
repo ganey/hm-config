@@ -1,4 +1,4 @@
-import logging
+from minerconfig.logger import logger
 import dbus
 
 from lib.cputemp.service import Characteristic
@@ -23,21 +23,21 @@ class DiagnosticsCharacteristic(Characteristic):
     def ReadValue(self, options): # noqa 901
         # TODO (Rob): come back and make this method less complex for
         # C901 complexity rules.
-        logging.debug('Read diagnostics')
-        logging.debug('Diagnostics miner_bus')
+        logger.debug('Read diagnostics')
+        logger.debug('Diagnostics miner_bus')
         miner_bus = dbus.SystemBus()
-        logging.debug('Diagnostics miner_object')
+        logger.debug('Diagnostics miner_object')
         miner_object = miner_bus.get_object('com.helium.Miner', '/')
-        logging.debug('Diagnostics miner_interface')
+        logger.debug('Diagnostics miner_interface')
         miner_interface = dbus.Interface(miner_object, 'com.helium.Miner')
-        logging.debug('Diagnostics p2pstatus')
+        logger.debug('Diagnostics p2pstatus')
         try:
             self.p2pstatus = miner_interface.P2PStatus()
-            logging.debug('DBUS P2P SUCCEED')
-            logging.debug(self.p2pstatus)
+            logger.debug('DBUS P2P SUCCEED')
+            logger.debug(self.p2pstatus)
         except dbus.exceptions.DBusException:
             self.p2pstatus = ""
-            logging.debug('DBUS P2P FAIL')
+            logger.debug('DBUS P2P FAIL')
 
         try:
             eth_ip = nmcli_custom.device.show('eth0')['IP4.ADDRESS[1]'][:-3]
@@ -73,7 +73,7 @@ class DiagnosticsCharacteristic(Characteristic):
             diagnostics_proto.diagnostics['wifi'] = wifi_diag
         except FileNotFoundError:
             diagnostics_proto.diagnostics['wifi'] = "FF:FF:FF:FF:FF:FF"
-        logging.debug('items added to proto')
+        logger.debug('items added to proto')
         val = diagnostics_proto.SerializeToString()
-        logging.debug(val)
+        logger.debug(val)
         return string_to_dbus_byte_array(val)
