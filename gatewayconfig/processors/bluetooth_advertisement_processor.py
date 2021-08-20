@@ -1,8 +1,8 @@
-import logging
 from time import sleep
 
 from lib.cputemp.bletools import BleTools
 
+from gatewayconfig.logger import logger
 from gatewayconfig.bluetooth.advertisements.bluetooth_connection_advertisement import BluetoothConnectionAdvertisement
 
 ADVERTISEMENT_TYPE = 'peripheral'
@@ -16,7 +16,7 @@ class BluetoothAdvertisementProcessor:
         self.connection_advertisement = BluetoothConnectionAdvertisement(ADVERTISEMENT_INDEX, eth0_mac_address, ADVERTISEMENT_TYPE, variant)
 
     def run(self):
-        logging.debug("Running BluetoothAdvertisementProcessor")
+        logger.debug("Running BluetoothAdvertisementProcessor")
         
         while True:
             if(self.shared_state.should_advertise_bluetooth is True):
@@ -31,12 +31,12 @@ class BluetoothAdvertisementProcessor:
 
                 # Start advertising
                 self.connection_advertisement.register()
-                logging.debug("Starting Bluetooth advertisement")
+                logger.debug("Starting Bluetooth advertisement")
                 self.shared_state.is_advertising_bluetooth = True
 
                 # Stop advertising
                 sleep(ADVERTISEMENT_SECONDS)
-                logging.debug("Stopping Bluetooth advertisement")
+                logger.debug("Stopping Bluetooth advertisement")
                 self.connection_advertisement.unregister()
                 self.shared_state.is_advertising_bluetooth = False
                 self.shared_state.should_scan_wifi = False

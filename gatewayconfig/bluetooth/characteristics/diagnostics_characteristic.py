@@ -4,6 +4,7 @@ import os
 from lib.cputemp.service import Characteristic
 
 from gatewayconfig.logger import logger
+from gatewayconfig.helpers import string_to_dbus_byte_array
 from gatewayconfig.bluetooth.descriptors.diagnostics_descriptor import DiagnosticsDescriptor
 from gatewayconfig.bluetooth.descriptors.opaque_structure_descriptor import OpaqueStructureDescriptor
 import gatewayconfig.nmcli_custom as nmcli_custom
@@ -45,7 +46,7 @@ class DiagnosticsCharacteristic(Characteristic):
         except KeyError:
             pass
         try:
-            wlanIP = nmcli_custom.device.show('wlan0')['IP4.ADDRESS[1]'][:-3]
+            wlan_ip = nmcli_custom.device.show('wlan0')['IP4.ADDRESS[1]'][:-3]
         except KeyError:
             pass
 
@@ -53,7 +54,7 @@ class DiagnosticsCharacteristic(Characteristic):
         if('eth_ip' in locals()):
             ip_address = str(eth_ip)
         elif('wlanIP' in locals()):
-            ip_address = str(wlanIP)
+            ip_address = str(wlan_ip)
 
         diagnostics_proto = diagnostics_pb2.diagnostics_v1()
         diagnostics_proto.diagnostics['connected'] = str(self.p2pstatus[0][1])

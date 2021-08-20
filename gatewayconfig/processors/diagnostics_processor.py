@@ -1,7 +1,7 @@
-import logging
 from time import sleep
-
 import json
+
+from gatewayconfig.logger import logger
 
 DIAGNOSTICS_REFRESH_SECONDS = 60
 
@@ -11,14 +11,14 @@ class DiagnosticsProcessor:
         self.diagnostics_json_filepath = diagnostics_json_filepath
 
     def run(self):
-        logging.debug("Diagnostics DiagnosticsProcessor")
+        logger.debug("Diagnostics DiagnosticsProcessor")
 
         while True:
             self.read_diagnostics()
             sleep(DIAGNOSTICS_REFRESH_SECONDS)
 
     def read_diagnostics_and_get_ok(self):
-        logging.debug("Reading diagnostics from %s" % self.diagnostics_json_filepath)
+        logger.debug("Reading diagnostics from %s" % self.diagnostics_json_filepath)
         diagnostics_json_file = open(self.diagnostics_json_filepath)
         diagnostics_json = json.load(diagnostics_json_file)
         return diagnostics_json['PF'] is True
@@ -37,4 +37,4 @@ class DiagnosticsProcessor:
             self.shared_state.are_diagnostics_ok = False
 
         except Exception as e:
-            logging.warn("Unexpected error when trying to read diagnostics file: %s" % e)
+            logger.warn("Unexpected error when trying to read diagnostics file: %s" % e)

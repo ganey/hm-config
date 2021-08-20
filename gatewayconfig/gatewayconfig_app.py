@@ -33,8 +33,7 @@ class GatewayconfigApp:
 
         eth0_mac_address = read_eth0_mac_address(eth0_mac_address_filepath)
         onboarding_key, pub_key, animal_name = read_onboarding_key(onboarding_key_filepath)
-        # FIXME don't forget to redact onboarding key from logs
-        logger.debug("Read onboarding key: %s, pub_key: %s, animal_name: %s" % (onboarding_key, pub_key, animal_name))
+        logger.debug("Read onboarding pub_key: %s + animal_name: %s" % (pub_key, animal_name))
 
         self.bluetooth_services_processor = BluetoothServicesProcessor(eth0_mac_address, onboarding_key, pub_key, firmware_version, ethernet_is_online_filepath, self.shared_state)
         self.led_processor = LEDProcessor(self.status_led, self.shared_state)
