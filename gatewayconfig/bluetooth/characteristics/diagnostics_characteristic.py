@@ -11,6 +11,8 @@ import gatewayconfig.nmcli_custom as nmcli_custom
 import gatewayconfig.protos.diagnostics_pb2 as diagnostics_pb2
 import gatewayconfig.constants as constants
 
+DBUS_UNAVAILABLE_VALUE = "Loading..."
+
 class DiagnosticsCharacteristic(Characteristic):
     # Returns proto of eth, wifi, fw, ip, p2pstatus
 
@@ -20,7 +22,7 @@ class DiagnosticsCharacteristic(Characteristic):
                 ["read"], service)
         self.add_descriptor(DiagnosticsDescriptor(self))
         self.add_descriptor(OpaqueStructureDescriptor(self))
-        self.p2pstatus = ""
+        self.p2pstatus = False
         self.eth0_mac_address = eth0_mac_address
         self.wlan0_mac_address = wlan0_mac_address
 
@@ -49,8 +51,8 @@ class DiagnosticsCharacteristic(Characteristic):
             logger.debug('DBUS P2P SUCCEED')
             logger.debug(self.p2pstatus)
         except dbus.exceptions.DBusException:
-            p2pstatus = ""
-            logger.debug('DBUS P2P FAIL')
+            p2pstatus = False
+            logger.warn('DBUS P2P FAIL')
 
         logger.debug("p2pstatus: %s" % p2pstatus)
         return p2pstatus
@@ -58,10 +60,17 @@ class DiagnosticsCharacteristic(Characteristic):
     # Returns a diagnostics_pb2.diagnostics_v1
     def build_diagnostics_proto(self):
         diagnostics_proto = diagnostics_pb2.diagnostics_v1()
-        diagnostics_proto.diagnostics['connected'] = str(self.p2pstatus[0][1])
-        diagnostics_proto.diagnostics['dialable'] = str(self.p2pstatus[1][1])
-        diagnostics_proto.diagnostics['height'] = str(self.p2pstatus[3][1])
-        diagnostics_proto.diagnostics['nat_type'] = str(self.p2pstatus[2][1])
+        if not self.p2pstatus:
+            diagnostics_proto.diagnostics['connected'] = DBUS_UNAVAILABLE_VALUE
+            diagnostics_proto.diagnostics['dialable'] = DBUS_UNAVAILABLE_VALUE
+            diagnostics_proto.diagnostics['height'] = DBUS_UNAVAILABLE_VALUE
+            diagnostics_proto.diagnostics['nat_type'] = DBUS_UNAVAILABLE_VALUE
+        else:
+            diagnostics_proto.diagnostics['connected'] = str(self.p2pstatus[0][1])
+            diagnostics_proto.diagnostics['dialable'] = str(self.p2pstatus[1][1])
+            diagnostics_proto.diagnostics['height'] = str(self.p2pstatus[3][1])
+            diagnostics_proto.diagnostics['nat_type'] = str(self.p2pstatus[2][1])
+
         diagnostics_proto.diagnostics['eth'] = self.eth0_mac_address.replace(":", "")
         diagnostics_proto.diagnostics['wifi'] = self.wlan0_mac_address.replace(":", "")
         diagnostics_proto.diagnostics['fw'] = os.getenv('FIRMWARE_VERSION')
